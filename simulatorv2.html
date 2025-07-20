@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EquiCurve Simulator - Dynamic Token Crowdfunding</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/simulator.css">
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold gradient-text">EquiCurve</a>
+                    <span class="ml-4 text-gray-400">Simulator</span>
+                </div>
+                <div class="flex space-x-4">
+                    <button id="resetBtn" class="nav-button">
+                        Reset
+                    </button>
+                    <button id="exportBtn" class="nav-button primary">
+                        Export Results
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-20 pb-10 px-4">
+        <div class="max-w-7xl mx-auto">
+            <!-- Model Equation Display -->
+            <div class="equation-display">
+                <h2>Dynamic Demand Model</h2>
+                <p>
+                    D(t) = <span id="alphaDisplay">1000</span> × E(t)^<span id="betaDisplay">0.5</span> × P(t)^(-<span id="gammaDisplay">1.2</span>) × ε(t)
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Control Panel -->
+                <div class="lg:col-span-1">
+                    <div class="control-panel glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6">Model Parameters</h3>
+                        
+                        <!-- Alpha (Scale) -->
+                        <div class="mb-6">
+                            <label class="parameter-label">
+                                α (Base Demand): <span id="alphaValue" class="parameter-value">1000</span>
+                            </label>
+                            <input type="range" id="alphaSlider" min="100" max="5000" step="100" value="1000">
+                        </div>
+                        
+                        <!-- Beta (Effort Elasticity) -->
+                        <div class="mb-6">
+                            <label class="parameter-label">
+                                β (Effort Elasticity): <span id="betaValue" class="parameter-value">0.50</span>
+                            </label>
+                            <input type="range" id="betaSlider" min="0.1" max="0.9" step="0.05" value="0.5">
+                        </div>
+                        
+                        <!-- Gamma (Price Elasticity) -->
+                        <div class="mb-6">
+                            <label class="parameter-label">
+                                γ (Price Elasticity): <span id="gammaValue" class="parameter-value">1.20</span>
+                            </label>
+                            <input type="range" id="gammaSlider" min="0.5" max="2.0" step="0.05" value="1.2">
+                        </div>
+                        
+                        <!-- Campaign Settings -->
+                        <h3 class="text-xl font-bold mb-4 mt-8">Campaign Settings</h3>
+                        
+                        <!-- Target Amount -->
+                        <div class="mb-6">
+                            <label class="parameter-label">
+                                Target Amount ($): <span id="targetValue" class="parameter-value">100,000</span>
+                            </label>
+                            <input type="range" id="targetSlider" min="10000" max="1000000" step="10000" value="100000">
+                        </div>
+                        
+                        <!-- Initial Price -->
+                        <div class="mb-6">
+                            <label class="parameter-label">
+                                Initial Token Price ($): <span id="priceValue" class="parameter-value">1.00</span>
+                            </label>
+                            <input type="range" id="priceSlider" min="0.1" max="10" step="0.1" value="1">
+                        </div>
+                        
+                        <!-- Strategy Selection -->
+                        <div class="mb-6">
+                            <label class="parameter-label">Pricing Strategy</label>
+                            <select id="strategySelect" class="strategy-selector">
+                                <option value="fixed">Fixed Price</option>
+                                <option value="dynamic">Dynamic Pricing</option>
+                                <option value="bonding">Bonding Curve</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Experiment Selection -->
+                        <div class="mb-6">
+                            <label class="parameter-label">Experiment Type</label>
+                            <select id="experimentSelect" class="strategy-selector">
+                                <option value="basic">Basic Simulation</option>
+                                <optgroup label="1. Elasticity Analysis">
+                                    <option value="price-elasticity">1.1 Price Elasticity (γ) Variations</option>
+                                    <option value="effort-elasticity">1.2 Effort Elasticity (β) Variations</option>
+                                    <option value="cross-elasticity">1.3 Cross-Elasticity Effects</option>
+                                </optgroup>
+                                <optgroup label="2. Platform Fee Structure">
+                                    <option value="fixed-fees">2.1 Fixed Fee Models</option>
+                                    <option value="dynamic-fees">2.2 Dynamic Fee Models</option>
+                                    <option value="hybrid-fees">2.3 Hybrid Models</option>
+                                </optgroup>
+                                <optgroup label="3. Pricing Strategies">
+                                    <option value="static-pricing">3.1 Static Pricing Strategies</option>
+                                    <option value="dynamic-pricing-exp">3.2 Dynamic Pricing Rules</option>
+                                    <option value="bonding-curves">3.3 Bonding Curve Experiments</option>
+                                </optgroup>
+                                <optgroup label="4. Effort Strategies">
+                                    <option value="effort-patterns">4.1 Constant vs Variable Effort</option>
+                                    <option value="effort-allocation">4.2 Effort Allocation</option>
+                                    <option value="platform-effort">4.3 Platform vs Entrepreneur Effort</option>
+                                </optgroup>
+                                <optgroup label="5. Market Conditions">
+                                    <option value="market-cycles">5.1 Bull vs Bear Markets</option>
+                                    <option value="competition">5.2 Competition Effects</option>
+                                    <option value="external-shocks">5.3 External Shocks</option>
+                                </optgroup>
+                                <optgroup label="6. Campaign Duration">
+                                    <option value="duration-optimization">6.1 Duration Optimization</option>
+                                    <option value="multi-round">6.2 Multi-Round Strategies</option>
+                                </optgroup>
+                                <optgroup label="7. Success Criteria">
+                                    <option value="funding-thresholds">7.1 Funding Thresholds</option>
+                                    <option value="success-metrics">7.2 Success Metrics Beyond Funding</option>
+                                </optgroup>
+                                <optgroup label="8. Principal-Agent">
+                                    <option value="information-asymmetry">8.1 Information Asymmetry</option>
+                                    <option value="incentive-mechanisms">8.2 Incentive Mechanisms</option>
+                                    <option value="governance-models">8.3 Governance Models</option>
+                                </optgroup>
+                                <optgroup label="9. Network Effects">
+                                    <option value="viral-mechanics">9.1 Viral Mechanics</option>
+                                    <option value="community-building">9.2 Community Building</option>
+                                </optgroup>
+                                <optgroup label="10. Comparative Analysis">
+                                    <option value="traditional-vs-web3">10.1 Traditional vs Web3</option>
+                                    <option value="platform-comparison">10.2 Platform Comparison</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        
+                        <!-- Run Simulation Button -->
+                        <button id="runSimBtn" class="simulation-button">
+                            Run Simulation
+                        </button>
+                    </div>
+                    
+                    <!-- Results Summary -->
+                    <div class="results-summary">
+                        <h3>Results Summary</h3>
+                        <div id="resultsSummary" class="space-y-2 text-sm">
+                            <p>Run a simulation to see results...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Visualization Area -->
+                <div class="lg:col-span-2 visualization-area">
+                    <!-- Price & Demand Chart -->
+                    <div class="chart-panel">
+                        <h3>Price & Demand Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="demandChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Revenue Chart -->
+                    <div class="chart-panel">
+                        <h3>Cumulative Revenue vs Target</h3>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Log-Log Plot -->
+                    <div class="chart-panel">
+                        <h3>Log-Log Relationship</h3>
+                        <div class="chart-container">
+                            <canvas id="logLogChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load the model -->
+    <script src="js/model.js"></script>
+    
+    <!-- Load experiment framework (optional) -->
+    <script src="experiments/framework.js"></script>
+    
+    <!-- Load the simulator logic -->
+    <script src="js/simulator.js"></script>
+</body>
+</html>

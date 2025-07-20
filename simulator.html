@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EquiCurve Simulator - Dynamic Token Crowdfunding</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/simulator.css">
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold gradient-text">EquiCurve</a>
+                    <span class="ml-4 text-gray-400">Simulator</span>
+                </div>
+                <div class="flex space-x-4">
+                    <button id="resetBtn" class="nav-button">
+                        Reset
+                    </button>
+                    <button id="exportBtn" class="nav-button primary">
+                        Export Results
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-20 pb-10 px-4">
+        <div class="max-w-7xl mx-auto">
+            <!-- Model Equation Display -->
+            <div class="equation-display">
+                <h2>Dynamic Demand Model</h2>
+                <p>
+                    D(t) = <span id="alphaDisplay">1000</span> × E(t)^<span id="betaDisplay">0.5</span> × P(t)^(-<span id="gammaDisplay">1.2</span>) × ε(t)
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Control Panel -->
+                <div class="lg:col-span-1">
+                    <div class="control-panel glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6">Model Parameters</h3>
+                        
+                        <!-- Alpha (Scale) -->
+                        <div class="mb-6">
+                            <label class="parameter-label">
+                                α (Base Demand): <span id="alphaValue" class="parameter-value">1000</span>
+                            </label>
+                            <input type="range" id="alphaSlider" min="100" max="5000" step="100" value="1000">
+                        </div>
+                        
+                        <!-- Beta (Effort Elasticity) -->
+                        <div class="mb-6">
+                            <label class="parameter-label">
+                                β (Effort Elasticity): <span id="betaValue" class="parameter-value">0.50</span>
+                            </label>
+                            <input type="range" id="betaSlider" min="0.1" max="0.9" step="0.05" value="0.5">
+                        </div>
+                        
+                        <!-- Gamma (Price Elasticity) -->
+                        <div class="mb-6">
+                            <label class="parameter-label">
+                                γ (Price Elasticity): <span id="gammaValue" class="parameter-value">1.20</span>
+                            </label>
+                            <input type="range" id="gammaSlider" min="0.5" max="2.0" step="0.05" value="1.2">
+                        </div>
+                        
+                        <!-- Campaign Settings -->
+                        <h3 class="text-xl font-bold mb-4 mt-8">Campaign Settings</h3>
+                        
+                        <!-- Target Amount -->
+                        <div class="mb-6">
+                            <label class="parameter-label">
+                                Target Amount ($): <span id="targetValue" class="parameter-value">100,000</span>
+                            </label>
+                            <input type="range" id="targetSlider" min="10000" max="1000000" step="10000" value="100000">
+                        </div>
+                        
+                        <!-- Initial Price -->
+                        <div class="mb-6">
+                            <label class="parameter-label">
+                                Initial Token Price ($): <span id="priceValue" class="parameter-value">1.00</span>
+                            </label>
+                            <input type="range" id="priceSlider" min="0.1" max="10" step="0.1" value="1">
+                        </div>
+                        
+                        <!-- Strategy Selection -->
+                        <div class="mb-6">
+                            <label class="parameter-label">Pricing Strategy</label>
+                            <select id="strategySelect" class="strategy-selector">
+                                <option value="fixed">Fixed Price</option>
+                                <option value="dynamic">Dynamic Pricing</option>
+                                <option value="bonding">Bonding Curve</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Run Simulation Button -->
+                        <button id="runSimBtn" class="simulation-button">
+                            Run Simulation
+                        </button>
+                    </div>
+                    
+                    <!-- Results Summary -->
+                    <div class="results-summary">
+                        <h3>Results Summary</h3>
+                        <div id="resultsSummary" class="space-y-2 text-sm">
+                            <p>Run a simulation to see results...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Visualization Area -->
+                <div class="lg:col-span-2 visualization-area">
+                    <!-- Price & Demand Chart -->
+                    <div class="chart-panel">
+                        <h3>Price & Demand Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="demandChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Revenue Chart -->
+                    <div class="chart-panel">
+                        <h3>Cumulative Revenue vs Target</h3>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Log-Log Plot -->
+                    <div class="chart-panel">
+                        <h3>Log-Log Relationship</h3>
+                        <div class="chart-container">
+                            <canvas id="logLogChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load the model -->
+    <script src="js/model.js"></script>
+    
+    <!-- Load the simulator logic -->
+    <script src="js/simulator.js"></script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EquiCurve Simulator - Dynamic Token Crowdfunding</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Gradient backgrounds */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Glassmorphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Custom slider styles */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        
+        input[type="range"]::-webkit-slider-track {
+            background: #4a5568;
+            height: 6px;
+            border-radius: 3px;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #667eea;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            margin-top: -7px;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+        
+        /* FIX: Chart container styling */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .chart-container canvas {
+            height: 300px !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold gradient-text">EquiCurve</a>
+                    <span class="ml-4 text-gray-400">Simulator</span>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="resetSimulation()" class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
+                        Reset
+                    </button>
+                    <button onclick="exportResults()" class="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 transition-colors">
+                        Export Results
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-20 pb-10 px-4">
+        <div class="max-w-7xl mx-auto">
+            <!-- Model Equation Display -->
+            <div class="glass rounded-xl p-6 mb-6 text-center">
+                <h2 class="text-2xl font-bold mb-2">Dynamic Demand Model</h2>
+                <p class="text-xl font-mono text-purple-300">
+                    D(t) = <span id="alphaDisplay">1000</span> × E(t)^<span id="betaDisplay">0.5</span> × P(t)^(-<span id="gammaDisplay">1.2</span>) × ε(t)
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Control Panel -->
+                <div class="lg:col-span-1">
+                    <div class="glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6">Model Parameters</h3>
+                        
+                        <!-- Alpha (Scale) -->
+                        <div class="mb-6">
+                            <label class="block text-sm text-gray-300 mb-2">
+                                α (Base Demand): <span id="alphaValue" class="text-purple-400 font-mono">1000</span>
+                            </label>
+                            <input type="range" id="alphaSlider" min="100" max="5000" step="100" value="1000" 
+                                   class="w-full" onchange="updateParameters()">
+                        </div>
+                        
+                        <!-- Beta (Effort Elasticity) -->
+                        <div class="mb-6">
+                            <label class="block text-sm text-gray-300 mb-2">
+                                β (Effort Elasticity): <span id="betaValue" class="text-purple-400 font-mono">0.50</span>
+                            </label>
+                            <input type="range" id="betaSlider" min="0.1" max="0.9" step="0.05" value="0.5" 
+                                   class="w-full" onchange="updateParameters()">
+                        </div>
+                        
+                        <!-- Gamma (Price Elasticity) -->
+                        <div class="mb-6">
+                            <label class="block text-sm text-gray-300 mb-2">
+                                γ (Price Elasticity): <span id="gammaValue" class="text-purple-400 font-mono">1.20</span>
+                            </label>
+                            <input type="range" id="gammaSlider" min="0.5" max="2.0" step="0.05" value="1.2" 
+                                   class="w-full" onchange="updateParameters()">
+                        </div>
+                        
+                        <!-- Campaign Settings -->
+                        <h3 class="text-xl font-bold mb-4 mt-8">Campaign Settings</h3>
+                        
+                        <!-- Target Amount -->
+                        <div class="mb-6">
+                            <label class="block text-sm text-gray-300 mb-2">
+                                Target Amount ($): <span id="targetValue" class="text-purple-400 font-mono">100,000</span>
+                            </label>
+                            <input type="range" id="targetSlider" min="10000" max="1000000" step="10000" value="100000" 
+                                   class="w-full" onchange="updateParameters()">
+                        </div>
+                        
+                        <!-- Initial Price -->
+                        <div class="mb-6">
+                            <label class="block text-sm text-gray-300 mb-2">
+                                Initial Token Price ($): <span id="priceValue" class="text-purple-400 font-mono">1.00</span>
+                            </label>
+                            <input type="range" id="priceSlider" min="0.1" max="10" step="0.1" value="1" 
+                                   class="w-full" onchange="updateParameters()">
+                        </div>
+                        
+                        <!-- Strategy Selection -->
+                        <div class="mb-6">
+                            <label class="block text-sm text-gray-300 mb-2">Pricing Strategy</label>
+                            <select id="strategySelect" class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white"
+                                    onchange="updateParameters()">
+                                <option value="fixed">Fixed Price</option>
+                                <option value="dynamic">Dynamic Pricing</option>
+                                <option value="bonding">Bonding Curve</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Run Simulation Button -->
+                        <button onclick="runSimulation()" 
+                                class="w-full gradient-bg text-white font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity">
+                            Run Simulation
+                        </button>
+                    </div>
+                    
+                    <!-- Results Summary -->
+                    <div class="glass rounded-xl p-6 mt-6">
+                        <h3 class="text-xl font-bold mb-4">Results Summary</h3>
+                        <div id="resultsSummary" class="space-y-2 text-sm">
+                            <p>Run a simulation to see results...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Visualization Area -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Price & Demand Chart -->
+                    <div class="glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4">Price & Demand Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="demandChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Revenue Chart -->
+                    <div class="glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4">Cumulative Revenue vs Target</h3>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Log-Log Plot -->
+                    <div class="glass rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4">Log-Log Relationship</h3>
+                        <div class="chart-container">
+                            <canvas id="logLogChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crowdfunding Model Classes -->
+    <script>
+        /**
+         * EquiCurve - Core Simulation Engine
+         * Implements multiplicative demand model with log-log transformation capabilities
+         */
+        class CrowdfundingModel {
+            constructor(params = {}) {
+                // Model parameters with defaults based on empirical studies
+                this.alpha = params.alpha || 1000;  // Base demand scale
+                this.beta = params.beta || 0.5;     // Effort elasticity
+                this.gamma = params.gamma || 1.2;   // Price elasticity
+                this.sigma = params.sigma || 0.2;   // Noise standard deviation
+                
+                // Campaign parameters
+                this.duration = params.duration || 30;  // days
+                this.target = params.target || 100000;  // USD
+                this.initialPrice = params.initialPrice || 1.0;
+                
+                // Time series data storage
+                this.history = [];
+            }
+            
+            /**
+             * Calculate demand using multiplicative model
+             * D(t) = α × E(t)^β × P(t)^(-γ) × ε(t)
+             */
+            calculateDemand(price, effort, includeNoise = true) {
+                const baseDemand = this.alpha * Math.pow(effort, this.beta) * Math.pow(price, -this.gamma);
+                
+                if (includeNoise) {
+                    // Log-normal noise
+                    const epsilon = this.generateLogNormalNoise();
+                    return baseDemand * epsilon;
+                }
+                
+                return baseDemand;
+            }
+            
+            /**
+             * Generate log-normal noise
+             * If ln(ε) ~ N(0, σ²), then ε ~ LogNormal(0, σ²)
+             */
+            generateLogNormalNoise() {
+                const normal = this.generateNormalRandom(0, this.sigma);
+                return Math.exp(normal);
+            }
+            
+            /**
+             * Box-Muller transform for normal distribution
+             */
+            generateNormalRandom(mean, stdDev) {
+                let u = 0, v = 0;
+                while(u === 0) u = Math.random(); // Converting [0,1) to (0,1)
+                while(v === 0) v = Math.random();
+                const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+                return z * stdDev + mean;
+            }
+            
+            /**
+             * Simulate a complete campaign
+             */
+            simulateCampaign(strategy) {
+                this.history = [];
+                let cumulativeRaised = 0;
+                let cumulativeDemand = 0;
+                
+                for (let day = 1; day <= this.duration; day++) {
+                    // Get price and effort from strategy
+                    const price = strategy.getPrice(day, cumulativeRaised, this.target);
+                    const effort = strategy.getEffort(day, cumulativeRaised, this.target);
+                    
+                    // Calculate daily demand
+                    const demand = this.calculateDemand(price, effort);
+                    const revenue = demand * price;
+                    
+                    // Update cumulative values
+                    cumulativeRaised += revenue;
+                    cumulativeDemand += demand;
+                    
+                    // Store history
+                    this.history.push({
+                        day,
+                        price,
+                        effort,
+                        demand,
+                        revenue,
+                        cumulativeRaised,
+                        cumulativeDemand,
+                        percentComplete: (cumulativeRaised / this.target) * 100
+                    });
+                }
+                
+                return {
+                    success: cumulativeRaised >= this.target,
+                    totalRaised: cumulativeRaised,
+                    totalDemand: cumulativeDemand,
+                    history: this.history
+                };
+            }
+        }
+
+        /**
+         * Pricing Strategy Classes
+         */
+        class PricingStrategy {
+            constructor(initialPrice) {
+                this.initialPrice = initialPrice;
+            }
+            
+            getPrice(day, cumulativeRaised, target) {
+                throw new Error('Must implement getPrice method');
+            }
+            
+            getEffort(day, cumulativeRaised, target) {
+                throw new Error('Must implement getEffort method');
+            }
+        }
+
+        class FixedPricingStrategy extends PricingStrategy {
+            constructor(initialPrice, constantEffort = 5) {
+                super(initialPrice);
+                this.constantEffort = constantEffort;
+            }
+            
+            getPrice(day, cumulativeRaised, target) {
+                return this.initialPrice;
+            }
+            
+            getEffort(day, cumulativeRaised, target) {
+                return this.constantEffort;
+            }
+        }
+
+        class DynamicPricingStrategy extends PricingStrategy {
+            constructor(initialPrice, effortBudget = 150) {
+                super(initialPrice);
+                this.effortBudget = effortBudget;
+                this.priceAdjustmentRate = 0.05;
+            }
+            
+            getPrice(day, cumulativeRaised, target) {
+                const progressRatio = cumulativeRaised / target;
+                const timeRatio = day / 30;
+                
+                // Increase price if ahead of schedule, decrease if behind
+                const expectedProgress = timeRatio;
+                const adjustment = (progressRatio - expectedProgress) * this.priceAdjustmentRate;
+                
+                return this.initialPrice * (1 + adjustment);
+            }
+            
+            getEffort(day, cumulativeRaised, target) {
+                const remainingDays = 30 - day + 1;
+                const remainingBudget = this.effortBudget * (1 - day/30);
+                
+                // Front-load effort if behind target
+                const progressRatio = cumulativeRaised / target;
+                const urgency = progressRatio < day/30 ? 2 : 1;
+                
+                return Math.max(1, (remainingBudget / remainingDays) * urgency);
+            }
+        }
+
+        class BondingCurveStrategy extends PricingStrategy {
+            constructor(initialPrice, curveParam = 0.5) {
+                super(initialPrice);
+                this.curveParam = curveParam;
+            }
+            
+            getPrice(day, cumulativeRaised, target) {
+                // P = initialPrice * (1 + curveParam * (tokens_sold / target_tokens))
+                const tokensSold = cumulativeRaised / this.initialPrice; // Simplified
+                const targetTokens = target / this.initialPrice;
+                
+                return this.initialPrice * (1 + this.curveParam * (tokensSold / targetTokens));
+            }
+            
+            getEffort(day, cumulativeRaised, target) {
+                // Increase effort as price increases to maintain demand
+                const currentPrice = this.getPrice(day, cumulativeRaised, target);
+                const priceRatio = currentPrice / this.initialPrice;
+                
+                return 5 * Math.sqrt(priceRatio); // Scale effort with price
+            }
+        }
+    </script>
+</body>
+</html>>
+    
+    <!-- Simulator Logic -->
+    <script>
+        // Initialize charts
+        let demandChart, revenueChart, logLogChart;
+        let currentModel, currentResults;
+        
+        // Chart configuration - FIX: Set maintainAspectRatio to true and responsive sizing
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 2,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'white'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                y: {
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        };
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            updateParameters();
+        });
+        
+        // Make functions globally accessible
+        window.runSimulation = runSimulation;
+        window.updateParameters = updateParameters;
+        window.resetSimulation = resetSimulation;
+        window.exportResults = exportResults;
+        
+        function initializeCharts() {
+            // Price & Demand Chart
+            const ctx1 = document.getElementById('demandChart').getContext('2d');
+            demandChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Token Price ($)',
+                        data: [],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        yAxisID: 'y1'
+                    }, {
+                        label: 'Daily Demand',
+                        data: [],
+                        borderColor: '#f687b3',
+                        backgroundColor: 'rgba(246, 135, 179, 0.1)',
+                        yAxisID: 'y2'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Day', color: 'white' },
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: { display: true, text: 'Price ($)', color: 'white' },
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y2: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: { display: true, text: 'Demand', color: 'white' },
+                            ticks: { color: 'white' },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
+            
+            // Revenue Chart
+            const ctx2 = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Cumulative Revenue ($)',
+                        data: [],
+                        borderColor: '#48bb78',
+                        backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                    }, {
+                        label: 'Target',
+                        data: [],
+                        borderColor: '#ed8936',
+                        borderDash: [5, 5],
+                        fill: false
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Day', color: 'white' },
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Revenue ($)', color: 'white' },
+                            ticks: { 
+                                color: 'white',
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+            
+            // Log-Log Chart
+            const ctx3 = document.getElementById('logLogChart').getContext('2d');
+            logLogChart = new Chart(ctx3, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Log(Demand) vs Log(Price)',
+                        data: [],
+                        backgroundColor: '#e53e3e',
+                        borderColor: '#e53e3e'
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Log(Price)', color: 'white' },
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Log(Demand)', color: 'white' },
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function updateParameters() {
+            // Update display values
+            const alpha = document.getElementById('alphaSlider').value;
+            const beta = document.getElementById('betaSlider').value;
+            const gamma = document.getElementById('gammaSlider').value;
+            const target = document.getElementById('targetSlider').value;
+            const price = document.getElementById('priceSlider').value;
+            
+            document.getElementById('alphaValue').textContent = parseInt(alpha).toLocaleString();
+            document.getElementById('betaValue').textContent = parseFloat(beta).toFixed(2);
+            document.getElementById('gammaValue').textContent = parseFloat(gamma).toFixed(2);
+            document.getElementById('targetValue').textContent = parseInt(target).toLocaleString();
+            document.getElementById('priceValue').textContent = parseFloat(price).toFixed(2);
+            
+            // Update equation display
+            document.getElementById('alphaDisplay').textContent = parseInt(alpha).toLocaleString();
+            document.getElementById('betaDisplay').textContent = parseFloat(beta).toFixed(2);
+            document.getElementById('gammaDisplay').textContent = parseFloat(gamma).toFixed(2);
+        }
+        
+        function runSimulation() {
+            // Get parameters
+            const alpha = parseFloat(document.getElementById('alphaSlider').value);
+            const beta = parseFloat(document.getElementById('betaSlider').value);
+            const gamma = parseFloat(document.getElementById('gammaSlider').value);
+            const target = parseFloat(document.getElementById('targetSlider').value);
+            const initialPrice = parseFloat(document.getElementById('priceSlider').value);
+            const strategyType = document.getElementById('strategySelect').value;
+            
+            // Create model
+            currentModel = new CrowdfundingModel({
+                alpha: alpha,
+                beta: beta,
+                gamma: gamma,
+                duration: 30,
+                target: target,
+                initialPrice: initialPrice
+            });
+            
+            // Create strategy
+            let strategy;
+            switch(strategyType) {
+                case 'dynamic':
+                    strategy = new DynamicPricingStrategy(initialPrice);
+                    break;
+                case 'bonding':
+                    strategy = new BondingCurveStrategy(initialPrice);
+                    break;
+                default:
+                    strategy = new FixedPricingStrategy(initialPrice);
+            }
+            
+            // Run simulation
+            currentResults = currentModel.simulateCampaign(strategy);
+            
+            // Update charts
+            updateCharts(currentResults.history);
+            
+            // Update results summary
+            updateResultsSummary(currentResults);
+        }
+        
+        function updateCharts(history) {
+            // Update Price & Demand Chart
+            demandChart.data.labels = history.map(h => h.day);
+            demandChart.data.datasets[0].data = history.map(h => h.price);
+            demandChart.data.datasets[1].data = history.map(h => h.demand);
+            demandChart.update();
+            
+            // Update Revenue Chart
+            const target = currentModel.target;
+            revenueChart.data.labels = history.map(h => h.day);
+            revenueChart.data.datasets[0].data = history.map(h => h.cumulativeRaised);
+            revenueChart.data.datasets[1].data = history.map(h => target);
+            revenueChart.update();
+            
+            // Update Log-Log Chart
+            const logData = history.map(h => ({
+                x: Math.log(h.price),
+                y: Math.log(h.demand)
+            }));
+            logLogChart.data.datasets[0].data = logData;
+            logLogChart.update();
+        }
+        
+        function updateResultsSummary(results) {
+            const summaryDiv = document.getElementById('resultsSummary');
+            const successClass = results.success ? 'text-green-400' : 'text-red-400';
+            
+            summaryDiv.innerHTML = `
+                <p>Status: <span class="${successClass} font-bold">${results.success ? 'SUCCESS' : 'FAILED'}</span></p>
+                <p>Total Raised: <span class="text-purple-400 font-mono">$${results.totalRaised.toLocaleString(undefined, {maximumFractionDigits: 0})}</span></p>
+                <p>Total Tokens: <span class="text-purple-400 font-mono">${results.totalDemand.toLocaleString(undefined, {maximumFractionDigits: 0})}</span></p>
+                <p>Success Rate: <span class="text-purple-400 font-mono">${((results.totalRaised / currentModel.target) * 100).toFixed(1)}%</span></p>
+                <p>Avg Token Price: <span class="text-purple-400 font-mono">$${(results.totalRaised / results.totalDemand).toFixed(2)}</span></p>
+            `;
+        }
+        
+        function resetSimulation() {
+            // Reset sliders to default values
+            document.getElementById('alphaSlider').value = 1000;
+            document.getElementById('betaSlider').value = 0.5;
+            document.getElementById('gammaSlider').value = 1.2;
+            document.getElementById('targetSlider').value = 100000;
+            document.getElementById('priceSlider').value = 1;
+            document.getElementById('strategySelect').value = 'fixed';
+            
+            updateParameters();
+            
+            // Clear charts
+            demandChart.data.labels = [];
+            demandChart.data.datasets.forEach(dataset => dataset.data = []);
+            demandChart.update();
+            
+            revenueChart.data.labels = [];
+            revenueChart.data.datasets.forEach(dataset => dataset.data = []);
+            revenueChart.update();
+            
+            logLogChart.data.datasets[0].data = [];
+            logLogChart.update();
+            
+            // Clear results
+            document.getElementById('resultsSummary').innerHTML = '<p>Run a simulation to see results...</p>';
+        }
+        
+        function exportResults() {
+            if (!currentResults) {
+                alert('Please run a simulation first!');
+                return;
+            }
+            
+            // Create CSV content
+            let csv = 'Day,Price,Effort,Demand,Revenue,Cumulative Raised,Percent Complete\n';
+            currentResults.history.forEach(h => {
+                csv += `${h.day},${h.price},${h.effort},${h.demand},${h.revenue},${h.cumulativeRaised},${h.percentComplete}\n`;
+            });
+            
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'equicurve_simulation_results.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script

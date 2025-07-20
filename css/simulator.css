@@ -1,0 +1,316 @@
+/* EquiCurve - Simulator Specific Styles */
+
+/* Custom slider styles */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-track {
+    background: #4a5568;
+    height: 6px;
+    border-radius: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #667eea;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    margin-top: -7px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #5a67d8;
+    transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-track {
+    background: #4a5568;
+    height: 6px;
+    border-radius: 3px;
+    border: none;
+}
+
+input[type="range"]::-moz-range-thumb {
+    background: #667eea;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    background: #5a67d8;
+    transform: scale(1.1);
+}
+
+/* Chart container styling */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.chart-container canvas {
+    height: 300px !important;
+    border-radius: 8px;
+}
+
+/* Control panel styles */
+.control-panel {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.control-panel:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Parameter labels */
+.parameter-label {
+    font-size: 0.875rem;
+    color: #d1d5db;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.parameter-value {
+    color: #a78bfa;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-weight: 500;
+}
+
+/* Results summary styles */
+.results-summary {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.results-summary h3 {
+    color: #f3f4f6;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.results-summary p {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: #d1d5db;
+}
+
+/* Success/failure status colors */
+.status-success {
+    color: #10b981;
+    font-weight: 700;
+}
+
+.status-failed {
+    color: #ef4444;
+    font-weight: 700;
+}
+
+/* Equation display */
+.equation-display {
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.equation-display h2 {
+    color: #f3f4f6;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.equation-display p {
+    font-size: 1.25rem;
+    font-family: 'Monaco', 'Menlo', monospace;
+    color: #c4b5fd;
+}
+
+/* Strategy selector */
+.strategy-selector {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #f3f4f6;
+    font-size: 0.875rem;
+    width: 100%;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.strategy-selector:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.strategy-selector option {
+    background: #1f2937;
+    color: #f3f4f6;
+}
+
+/* Simulation button */
+.simulation-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.simulation-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.simulation-button:active {
+    transform: translateY(0);
+}
+
+/* Navigation button styles */
+.nav-button {
+    background: #374151;
+    color: #f3f4f6;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+}
+
+.nav-button.primary {
+    background: #7c3aed;
+    color: white;
+}
+
+.nav-button.primary:hover {
+    background: #6d28d9;
+}
+
+/* Chart visualization area */
+.visualization-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.chart-panel {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.chart-panel:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.chart-panel h3 {
+    color: #f3f4f6;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .chart-container {
+        height: 250px;
+    }
+    
+    .chart-container canvas {
+        height: 250px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 200px;
+    }
+    
+    .chart-container canvas {
+        height: 200px !important;
+    }
+    
+    .control-panel {
+        margin-bottom: 1rem;
+    }
+    
+    .equation-display {
+        padding: 1rem;
+    }
+    
+    .equation-display p {
+        font-size: 1rem;
+    }
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #667eea;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
