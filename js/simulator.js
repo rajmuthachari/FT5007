@@ -348,11 +348,16 @@ async function runExperiment(experimentType) {
         
     } catch (error) {
         console.error('Experiment error:', error);
-        // Fallback to basic simulation
-        runBasicSimulation();
+        
+        // Check if it's a "not found" error - show placeholder instead of fallback
+        if (error.message.includes('not found')) {
+            updateExperimentPlaceholder(experimentType, 'Experiment not yet implemented');
+        } else {
+            // Other errors - fallback to basic simulation
+            runBasicSimulation();
+        }
     }
 }
-
 /**
  * Show placeholder message for unimplemented experiments
  */
