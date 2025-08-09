@@ -243,15 +243,17 @@ class FixedPricingStrategy extends PricingStrategy {
 }
 
 class DynamicPricingStrategy extends PricingStrategy {
-    constructor(initialPrice, effortBudget = 150) {
-        super(initialPrice);
+    constructor(initialPrice, effortBudget = 150, duration = 30) {
+       super(initialPrice);
         this.effortBudget = effortBudget;
         this.priceAdjustmentRate = 0.05;
+        this.duration = duration;  // Add this line
     }
     
     getPrice(day, cumulativeRaised, target) {
         const progressRatio = cumulativeRaised / target;
-        const timeRatio = day / 30;
+        const timeRatio = day / this.duration;
+
         
         // Increase price if ahead of schedule, decrease if behind
         const expectedProgress = timeRatio;
@@ -261,12 +263,12 @@ class DynamicPricingStrategy extends PricingStrategy {
     }
     
     getEffort(day, cumulativeRaised, target) {
-        const remainingDays = 30 - day + 1;
-        const remainingBudget = this.effortBudget * (1 - day/30);
-        
+        const remainingDays = this.duration - day + 1;
+
+        const remainingBudget = this.effortBudget * (1 - day/this.duration);
         // Front-load effort if behind target
         const progressRatio = cumulativeRaised / target;
-        const urgency = progressRatio < day/30 ? 2 : 1;
+        const urgency = progressRatio < day/this.duration ? 2 : 1;
         
         return (remainingBudget / remainingDays) * urgency;
     }
