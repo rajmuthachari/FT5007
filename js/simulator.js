@@ -313,17 +313,24 @@ function runBasicSimulation() {
     updateResultsSummary(currentResults);
 }
 
+
 /**
  * Run experiment (placeholder for future implementation)
  */
 async function runExperiment(experimentType) {
+    console.log('🔍 DEBUG: Starting runExperiment');
+    console.log('🔍 DEBUG: Framework loaded?', typeof experimentFramework);
+    console.log('🔍 DEBUG: Selected experiment:', experimentType);
+    
     try {
         // Check if experiment framework is loaded
         if (typeof experimentFramework === 'undefined') {
-            console.warn('Experiment framework not loaded. Running basic simulation instead.');
+            console.warn('❌ Experiment framework not loaded. Running basic simulation instead.');
             runBasicSimulation();
             return;
         }
+        
+        console.log('✅ Framework loaded successfully');
         
         // Get current parameters
         const parameters = {
@@ -335,46 +342,58 @@ async function runExperiment(experimentType) {
             strategy: document.getElementById('strategySelect').value
         };
         
+        console.log('🔍 DEBUG: Parameters:', parameters);
+        
         // Run experiment
+        console.log('🔍 DEBUG: Calling experimentFramework.runExperiment...');
         const results = await experimentFramework.runExperiment(experimentType, parameters);
+        console.log('🔍 DEBUG: Results received:', results);
         
         if (results.status === 'placeholder') {
-            // Show placeholder message
+            console.log('✅ DEBUG: Found placeholder status, calling updateExperimentPlaceholder');
+            console.log('🔍 DEBUG: Function exists?', typeof updateExperimentPlaceholder);
+            
+            // Call the placeholder function
             updateExperimentPlaceholder(experimentType, results.message);
+            console.log('✅ DEBUG: updateExperimentPlaceholder called');
         } else {
-            // Update with experiment results
+            console.log('🔍 DEBUG: Not placeholder, calling updateExperimentResults');
             updateExperimentResults(experimentType, results);
         }
         
     } catch (error) {
-        console.error('Experiment error:', error);
+        console.error('❌ DEBUG: Caught error:', error);
+        console.log('🔍 DEBUG: Error message:', error.message);
         
         // Check if it's a "not found" error - show placeholder instead of fallback
         if (error.message.includes('not found')) {
+            console.log('✅ DEBUG: Not found error, calling updateExperimentPlaceholder');
             updateExperimentPlaceholder(experimentType, 'Experiment not yet implemented');
         } else {
-            // Other errors - fallback to basic simulation
+            console.log('❌ DEBUG: Other error, running basic simulation');
             runBasicSimulation();
         }
     }
 }
+
 /**
  * Show placeholder message for unimplemented experiments
  */
 function updateExperimentPlaceholder(experimentType, message) {
-    const summaryDiv = document.getElementById('resultsSummary');
-    
-    summaryDiv.innerHTML = `
-        <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4 mb-4">
-            <h4 class="text-yellow-400 font-semibold mb-2">🚧 Experiment In Development</h4>
-            <p class="text-sm text-gray-300 mb-2"><strong>Selected:</strong> ${experimentType}</p>
-            <p class="text-sm text-gray-400">${message}</p>
-            <p class="text-xs text-gray-500 mt-2">Running basic simulation instead...</p>
-        </div>
-    `;
-    
-    // Run basic simulation as fallback
-    runBasicSimulation();
+  // 1) Run the fallback first (this overwrites the panel)
+  runBasicSimulation();
+
+  // 2) Then inject the banner at the top so it persists
+  const summary = document.getElementById('resultsSummary');
+  const notice = `
+    <p id="exp-notice" style="color: orange; font-weight: bold; margin-bottom: 6px;">
+      🚧 EXPERIMENT "${experimentType}" NOT IMPLEMENTED YET
+    </p>
+    <p style="color: gray; margin-top: -4px; margin-bottom: 8px;">
+      Showing basic simulation instead…
+    </p>
+  `;
+  summary.insertAdjacentHTML('afterbegin', notice);
 }
 
 /**
@@ -384,8 +403,7 @@ function updateExperimentResults(experimentType, results) {
     // TODO: Implement experiment-specific result visualization
     console.log('Experiment results:', results);
     
-    // For now, fall back to basic simulation
-    runBasicSimulation();
+
 }
 
 /**
