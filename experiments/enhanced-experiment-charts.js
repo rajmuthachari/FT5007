@@ -1,6 +1,7 @@
 /**
  * EquiCurve - Enhanced Chart Updates for Experiments
  * Updates charts to show experiment-specific visualizations
+ * COMPLETE FILE with no-graph message fixes
  */
 
 // Enhanced experiment result handler with chart updates
@@ -11,6 +12,11 @@ function updateExperimentResultsWithCharts(experimentType, results) {
     
     // Update the results summary panel (direct call to avoid circular dependency)
     updateExperimentResultsDisplay(experimentType, results);
+    
+    // Remove any existing no-graph messages first
+    removeNoGraphMessage('demandChart');
+    removeNoGraphMessage('revenueChart');
+    removeNoGraphMessage('logLogChart');
     
     // Update charts based on experiment type
     switch(experimentType) {
@@ -29,6 +35,11 @@ function updateExperimentResultsWithCharts(experimentType, results) {
             updateElasticityCharts(results, 'beta', 'Effort Elasticity (β)');
             break;
             
+        case 'cross-elasticity':
+            console.log('📈 CHARTS: Cross elasticity charts');
+            updateElasticityCharts(results, 'combination', 'Parameter Combinations');
+            break;
+            
         case 'fixed-fees':
         case 'dynamic-fees':
         case 'hybrid-fees':
@@ -44,6 +55,7 @@ function updateExperimentResultsWithCharts(experimentType, results) {
             break;
             
         case 'market-cycles':
+        case 'external-shocks':
             console.log('📈 CHARTS: Market condition charts');
             updateMarketConditionCharts(results);
             break;
@@ -315,39 +327,6 @@ function updateMarketConditionCharts(results) {
     logLogChart.update('none');
 }
 
-// Generic experiment chart updates
-function updateGenericExperimentCharts(results) {
-    if (!results.results || results.results.length === 0) {
-        console.log('No chart data available for this experiment');
-        return;
-    }
-    
-    const labels = results.results.map((r, i) => r.name || r.strategy || `Option ${i + 1}`);
-    const successRates = results.results.map(r => r.successRate || r.avgOverallScore || 0);
-    
-    // Simple bar chart of results
-    demandChart.data.labels = labels;
-    demandChart.data.datasets[0].label = 'Performance Score';
-    demandChart.data.datasets[0].data = successRates;
-    demandChart.data.datasets[0].borderColor = '#8b5cf6';
-    
-    demandChart.data.datasets[1].label = '';
-    demandChart.data.datasets[1].data = [];
-    
-    demandChart.options.scales.x.title.text = 'Options';
-    demandChart.options.scales.y1.title.text = 'Performance Score';
-    demandChart.update('none');
-    
-    // Clear other charts for generic experiments
-    revenueChart.data.labels = [];
-    revenueChart.data.datasets[0].data = [];
-    revenueChart.data.datasets[1].data = [];
-    revenueChart.update('none');
-    
-    logLogChart.data.datasets[0].data = [];
-    logLogChart.update('none');
-}
-
 // Network Effects Charts
 function updateNetworkEffectsCharts(results) {
     const labels = results.results.map(r => r.name || r.strategy);
@@ -421,8 +400,6 @@ function updatePlatformComparisonCharts(results) {
     logLogChart.options.scales.y.title.text = 'User Satisfaction';
     logLogChart.update('none');
 }
-
-// Add these missing functions to enhanced-experiment-charts.js
 
 // Pricing Strategy Charts (for 3.1, 3.2, 3.3)
 function updatePricingStrategyCharts(results) {
@@ -522,8 +499,196 @@ function updateCompetitionCharts(results) {
     logLogChart.update('none');
 }
 
+// NEW FUNCTIONS FOR NO-GRAPH HANDLING
+
+// Helper function to get appropriate Chart 1 label based on experiment type
+function getChart1Label(experimentType) {
+    const labelMap = {
+        'effort-patterns': 'Success Rate (%)',
+        'effort-allocation': 'Success Rate (%)',
+        'platform-effort': 'Success Rate (%)',
+        'funding-thresholds': 'Success Rate (%)',
+        'success-metrics': 'Overall Score',
+        'information-asymmetry': 'Alignment Score',
+        'incentive-mechanisms': 'Alignment Score',
+        'governance-models': 'Alignment Score',
+        'multi-round': 'Success Rate (%)'
+    };
+    return labelMap[experimentType] || 'Performance Score';
+}
+
+// Helper function to get appropriate X-axis label
+function getXAxisLabel(experimentType) {
+    const labelMap = {
+        'effort-patterns': 'Effort Pattern',
+        'effort-allocation': 'Allocation Strategy',
+        'platform-effort': 'Effort Distribution',
+        'funding-thresholds': 'Threshold Configuration',
+        'success-metrics': 'Success Strategy',
+        'information-asymmetry': 'Information Level',
+        'incentive-mechanisms': 'Incentive Mechanism',
+        'governance-models': 'Governance Model',
+        'multi-round': 'Round Strategy'
+    };
+    return labelMap[experimentType] || 'Options';
+}
+
+// Helper function to get appropriate Y1-axis label
+function getY1AxisLabel(experimentType) {
+    const labelMap = {
+        'effort-patterns': 'Success Rate (%)',
+        'effort-allocation': 'Success Rate (%)',
+        'platform-effort': 'Success Rate (%)',
+        'funding-thresholds': 'Success Rate (%)',
+        'success-metrics': 'Overall Score',
+        'information-asymmetry': 'Alignment Score',
+        'incentive-mechanisms': 'Alignment Score',
+        'governance-models': 'Alignment Score',
+        'multi-round': 'Success Rate (%)'
+    };
+    return labelMap[experimentType] || 'Performance Score';
+}
+
+// Function to get chart object by name
+function getChartByName(chartId) {
+    switch(chartId) {
+        case 'demandChart': return typeof demandChart !== 'undefined' ? demandChart : null;
+        case 'revenueChart': return typeof revenueChart !== 'undefined' ? revenueChart : null;
+        case 'logLogChart': return typeof logLogChart !== 'undefined' ? logLogChart : null;
+        default: return null;
+    }
+}
+
+// Function to clear chart data and show "No graph to display" message
+function clearChartAndShowMessage(chartId) {
+    const chart = getChartByName(chartId);
+    
+    if (!chart) {
+        console.warn(`Chart ${chartId} not found`);
+        return;
+    }
+    
+    // Clear all chart data
+    chart.data.labels = [];
+    chart.data.datasets[0].data = [];
+    if (chart.data.datasets[1]) {
+        chart.data.datasets[1].data = [];
+    }
+    
+    // Clear axis titles
+    chart.options.scales.x.title.text = '';
+    chart.options.scales.y.title.text = '';
+    if (chart.options.scales.y1) chart.options.scales.y1.title.text = '';
+    if (chart.options.scales.y2) chart.options.scales.y2.title.text = '';
+    
+    chart.update('none');
+    
+    // Add DOM overlay message
+    addNoGraphMessage(chartId);
+}
+
+// Function to add "No graph to display" DOM overlay
+function addNoGraphMessage(chartId) {
+    // Remove any existing message first
+    removeNoGraphMessage(chartId);
+    
+    // Find the chart container
+    const chartContainer = document.querySelector(`#${chartId}`).parentElement;
+    
+    if (!chartContainer) {
+        console.warn(`Chart container for ${chartId} not found`);
+        return;
+    }
+    
+    // Create overlay message
+    const overlay = document.createElement('div');
+    overlay.className = 'no-graph-message';
+    overlay.setAttribute('data-chart', chartId);
+    overlay.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #9ca3af;
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+        pointer-events: none;
+        z-index: 10;
+        background: rgba(249, 250, 251, 0.9);
+        padding: 20px;
+        border-radius: 8px;
+        border: 2px dashed #d1d5db;
+    `;
+    overlay.textContent = 'No graph to display';
+    
+    // Make sure container is positioned relatively
+    chartContainer.style.position = 'relative';
+    
+    // Add the overlay
+    chartContainer.appendChild(overlay);
+}
+
+// Function to remove "No graph to display" message
+function removeNoGraphMessage(chartId) {
+    const existingMessage = document.querySelector(`.no-graph-message[data-chart="${chartId}"]`);
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+}
+
+// Function to show "No graph" messages for all charts
+function showAllNoGraphMessages() {
+    clearChartAndShowMessage('demandChart');
+    clearChartAndShowMessage('revenueChart');
+    clearChartAndShowMessage('logLogChart');
+}
+
+// Enhanced generic experiment chart updates with DOM overlay messages
+function updateGenericExperimentCharts(results) {
+    if (!results.results || results.results.length === 0) {
+        console.log('No chart data available for this experiment');
+        showAllNoGraphMessages();
+        return;
+    }
+    
+    const labels = results.results.map((r, i) => r.name || r.strategy || r.pattern || r.mechanism || `Option ${i + 1}`);
+    const successRates = results.results.map(r => r.successRate || r.avgOverallScore || r.avgAlignmentScore || 0);
+    
+    // Chart 1: Show available data
+    demandChart.data.labels = labels;
+    demandChart.data.datasets[0].label = getChart1Label(results.experimentType);
+    demandChart.data.datasets[0].data = successRates;
+    demandChart.data.datasets[0].borderColor = '#8b5cf6';
+    demandChart.data.datasets[0].backgroundColor = 'rgba(139, 92, 246, 0.1)';
+    
+    // Clear second dataset for Chart 1
+    demandChart.data.datasets[1].label = '';
+    demandChart.data.datasets[1].data = [];
+    
+    demandChart.options.scales.x.title.text = getXAxisLabel(results.experimentType);
+    demandChart.options.scales.y1.title.text = getY1AxisLabel(results.experimentType);
+    demandChart.options.scales.y2.title.text = '';
+    demandChart.update('none');
+    
+    // Remove any existing no-graph message from Chart 1
+    removeNoGraphMessage('demandChart');
+    
+    // Charts 2 and 3: Clear data and show "No graph to display" message
+    clearChartAndShowMessage('revenueChart');
+    clearChartAndShowMessage('logLogChart');
+}
+
 // Make enhanced chart function available globally
 if (typeof window !== 'undefined') {
     window.updateExperimentResultsWithCharts = updateExperimentResultsWithCharts;
-    console.log('✅ Enhanced experiment charts loaded');
+    window.updateGenericExperimentCharts = updateGenericExperimentCharts;
+    window.clearChartAndShowMessage = clearChartAndShowMessage;
+    window.showAllNoGraphMessages = showAllNoGraphMessages;
+    window.removeNoGraphMessage = removeNoGraphMessage;
+    window.addNoGraphMessage = addNoGraphMessage;
+    window.getChart1Label = getChart1Label;
+    window.getXAxisLabel = getXAxisLabel;
+    window.getY1AxisLabel = getY1AxisLabel;
+    console.log('✅ Enhanced experiment charts with complete no-graph handling loaded');
 }

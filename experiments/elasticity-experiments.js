@@ -34,7 +34,7 @@ class PriceElasticityExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: gamma, // Test this gamma value
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice
                 });
@@ -43,7 +43,7 @@ class PriceElasticityExperiment extends BaseExperiment {
                 let strategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         strategy = new BondingCurveStrategy(parameters.initialPrice);
@@ -135,7 +135,7 @@ class EffortElasticityExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: beta, // Test this beta value
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice
                 });
@@ -143,7 +143,7 @@ class EffortElasticityExperiment extends BaseExperiment {
                 let strategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         strategy = new BondingCurveStrategy(parameters.initialPrice);
@@ -240,7 +240,7 @@ class CrossElasticityExperiment extends BaseExperiment {
                         alpha: parameters.alpha,
                         beta: beta,
                         gamma: gamma,
-                        duration: parameters.duration || 30,
+                        duration: parameters.duration,
                         target: parameters.target,
                         initialPrice: parameters.initialPrice
                     });
@@ -248,7 +248,7 @@ class CrossElasticityExperiment extends BaseExperiment {
                     let strategy;
                     switch(parameters.strategy) {
                         case 'dynamic':
-                            strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                            strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                             break;
                         case 'bonding':
                             strategy = new BondingCurveStrategy(parameters.initialPrice);

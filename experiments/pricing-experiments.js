@@ -146,11 +146,11 @@ class StaticPricingExperiment extends BaseExperiment {
             },
             {
                 name: 'Linear Decay (50% reduction)',
-                strategy: new LinearDecayStrategy(parameters.initialPrice, parameters.initialPrice * 0.5, parameters.duration || 30, 5)
+                strategy: new LinearDecayStrategy(parameters.initialPrice, parameters.initialPrice * 0.5, parameters.duration, 5)
             },
             {
                 name: 'Linear Increase (50% increase)',
-                strategy: new LinearDecayStrategy(parameters.initialPrice, parameters.initialPrice * 1.5, parameters.duration || 30, 5)
+                strategy: new LinearDecayStrategy(parameters.initialPrice, parameters.initialPrice * 1.5, parameters.duration, 5)
             },
             {
                 name: 'Step Function (3 steps)',
@@ -158,7 +158,7 @@ class StaticPricingExperiment extends BaseExperiment {
                     {day: 1, price: parameters.initialPrice},
                     {day: 10, price: parameters.initialPrice * 0.8},
                     {day: 20, price: parameters.initialPrice * 0.6}
-                ], parameters.duration || 30, 5)
+                ], parameters.duration, 5)
             }
         ];
         
@@ -178,7 +178,7 @@ class StaticPricingExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice
                 });
@@ -250,19 +250,19 @@ class DynamicPricingExperiment extends BaseExperiment {
         const strategies = [
             {
                 name: 'Basic Dynamic',
-                strategy: new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30)
+                strategy: new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration)
             },
             {
                 name: 'Adaptive (Low Sensitivity)',
-                strategy: new AdaptivePricingStrategy(parameters.initialPrice, 150, parameters.duration || 30, 0.05)
+                strategy: new AdaptivePricingStrategy(parameters.initialPrice, 150, parameters.duration, 0.05)
             },
             {
                 name: 'Adaptive (Medium Sensitivity)',
-                strategy: new AdaptivePricingStrategy(parameters.initialPrice, 150, parameters.duration || 30, 0.1)
+                strategy: new AdaptivePricingStrategy(parameters.initialPrice, 150, parameters.duration, 0.1)
             },
             {
                 name: 'Adaptive (High Sensitivity)',
-                strategy: new AdaptivePricingStrategy(parameters.initialPrice, 150, parameters.duration || 30, 0.2)
+                strategy: new AdaptivePricingStrategy(parameters.initialPrice, 150, parameters.duration, 0.2)
             }
         ];
         
@@ -282,7 +282,7 @@ class DynamicPricingExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice
                 });
@@ -381,7 +381,7 @@ class BondingCurvesExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice
                 });

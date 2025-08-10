@@ -7,10 +7,11 @@
 
 // Enhanced effort strategies
 class VariableEffortStrategy extends PricingStrategy {
-    constructor(initialPrice, effortPattern, totalBudget = 150) {
+    constructor(initialPrice, effortPattern, totalBudget = 150, duration = 30) {
         super(initialPrice);
         this.effortPattern = effortPattern; // 'front-loaded', 'back-loaded', 'middle-peak', 'u-shape'
         this.totalBudget = totalBudget;
+        this.duration = duration;
     }
     
     getPrice(day, cumulativeRaised, target) {
@@ -18,7 +19,7 @@ class VariableEffortStrategy extends PricingStrategy {
     }
     
     getEffort(day, cumulativeRaised, target) {
-        const duration = 30; // Assume 30-day campaign
+        const duration = this.duration;
         const progress = day / duration;
         
         switch(this.effortPattern) {
@@ -87,7 +88,8 @@ class AdaptiveEffortStrategy extends PricingStrategy {
     }
     
     getEffort(day, cumulativeRaised, target) {
-        const duration = 30;
+        
+        const duration = this.duration;
         const expectedProgress = day / duration;
         const actualProgress = cumulativeRaised / target;
         
@@ -139,7 +141,7 @@ class EffortPatternsExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice
                 });
@@ -147,7 +149,8 @@ class EffortPatternsExperiment extends BaseExperiment {
                 const strategy = new VariableEffortStrategy(
                     parameters.initialPrice,
                     strategyConfig.pattern,
-                    totalBudget
+                    totalBudget,
+                    parameters.duration || 30
                 );
                 
                 const result = model.simulateCampaign(strategy);
@@ -247,7 +250,7 @@ class EffortAllocationExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice
                 });
@@ -256,7 +259,7 @@ class EffortAllocationExperiment extends BaseExperiment {
                 const strategy = {
                     getPrice: (day, cumulativeRaised, target) => parameters.initialPrice,
                     getEffort: (day, cumulativeRaised, target) => {
-                        const duration = parameters.duration || 30;
+                        const duration = parameters.duration;
                         const baseEffort = totalBudget / duration;
                         
                         // Different effort types have different effectiveness multipliers
@@ -366,7 +369,7 @@ class PlatformEffortExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice
                 });
@@ -384,7 +387,7 @@ class PlatformEffortExperiment extends BaseExperiment {
                 avgTotalRaised += result.totalRaised;
                 
                 const totalEffort = combination.entrepreneur + (combination.platform * platformMultiplier);
-                avgEfficiency += result.totalRaised / (totalEffort * (parameters.duration || 30));
+                avgEfficiency += result.totalRaised / (totalEffort * (parameters.duration));
                 
                 // Calculate synergy effect (bonus when both parties contribute)
                 const synergy = combination.entrepreneur > 0 && combination.platform > 0 ? 
