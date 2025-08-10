@@ -357,8 +357,9 @@ async function runExperiment(experimentType) {
             updateExperimentPlaceholder(experimentType, results.message);
             console.log('✅ DEBUG: updateExperimentPlaceholder called');
         } else {
-            console.log('🔍 DEBUG: Not placeholder, calling updateExperimentResults');
-            updateExperimentResults(experimentType, results);
+            console.log('🔍 DEBUG: Not placeholder, calling enhanced charts');
+            console.log('🎯 Calling enhanced chart update for:', experimentType);
+            updateExperimentResultsWithCharts(experimentType, results);
         }
         
     } catch (error) {
@@ -400,10 +401,49 @@ function updateExperimentPlaceholder(experimentType, message) {
  * Update results with experiment data
  */
 function updateExperimentResults(experimentType, results) {
-    // TODO: Implement experiment-specific result visualization
-    console.log('Experiment results:', results);
+    console.log('📊 Displaying experiment results:', results);
     
-
+    const summaryDiv = document.getElementById('resultsSummary');
+    
+    if (results.experimentType === 'duration-optimization') {
+        let html = `
+            <div style="border: 2px solid #10b981; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                <h4 style="color: #10b981; font-weight: bold; margin-bottom: 0.5rem;">
+                    ✅ Duration Optimization Results
+                </h4>
+                <p style="color: #34d399; margin-bottom: 1rem;">
+                    <strong>${results.summary}</strong>
+                </p>
+                <div style="color: #d1d5db; font-size: 0.875rem;">
+        `;
+        
+        // Show results for each duration
+        results.results.forEach(result => {
+            const isOptimal = result.duration === results.optimal.duration;
+            const style = isOptimal ? 'color: #fbbf24; font-weight: bold;' : 'color: #9ca3af;';
+            
+            html += `
+                <p style="${style}">
+                    ${result.duration} days: ${result.successRate.toFixed(1)}% success rate 
+                    (avg: $${result.avgRaised.toLocaleString(undefined, {maximumFractionDigits: 0})})
+                    ${isOptimal ? '⭐ OPTIMAL' : ''}
+                </p>
+            `;
+        });
+        
+        html += `
+                </div>
+            </div>
+        `;
+        
+        summaryDiv.innerHTML = html;
+        
+        // Don't run basic simulation - show experiment results only
+        return;
+    }
+    
+    // For other experiments, fall back to basic simulation
+    runBasicSimulation();
 }
 
 /**
