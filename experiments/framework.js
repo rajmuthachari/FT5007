@@ -118,73 +118,12 @@ class BaseExperiment {
  * Experiment Categories - Placeholders for future implementation
  */
 
-// 1. Elasticity Analysis Experiments
-class PriceElasticityExperiment extends BaseExperiment {
-    constructor() {
-        super('price-elasticity', 'Price Elasticity (γ) Variations', 
-              'Test different price elasticity values to understand demand sensitivity');
-    }
-
-    async run(parameters = {}) {
-        // TODO: Implement price elasticity analysis
-        console.log('Running Price Elasticity Experiment - Not implemented yet');
-        return { status: 'placeholder', message: 'To be implemented' };
-    }
-}
-
-class EffortElasticityExperiment extends BaseExperiment {
-    constructor() {
-        super('effort-elasticity', 'Effort Elasticity (β) Variations',
-              'Test different effort elasticity values to understand marketing ROI');
-    }
-
-    async run(parameters = {}) {
-        // TODO: Implement effort elasticity analysis
-        console.log('Running Effort Elasticity Experiment - Not implemented yet');
-        return { status: 'placeholder', message: 'To be implemented' };
-    }
-}
-
-// 2. Platform Fee Structure Experiments
-class FixedFeesExperiment extends BaseExperiment {
-    constructor() {
-        super('fixed-fees', 'Fixed Fee Models',
-              'Compare different fixed fee structures');
-    }
-
-    async run(parameters = {}) {
-        // TODO: Implement fixed fee analysis
-        console.log('Running Fixed Fees Experiment - Not implemented yet');
-        return { status: 'placeholder', message: 'To be implemented' };
-    }
-}
-
-// 3. Pricing Strategy Experiments
-class StaticPricingExperiment extends BaseExperiment {
-    constructor() {
-        super('static-pricing', 'Static Pricing Strategies',
-              'Compare fixed price vs linear decay vs step function pricing');
-    }
-
-    async run(parameters = {}) {
-        // TODO: Implement static pricing comparison
-        console.log('Running Static Pricing Experiment - Not implemented yet');
-        return { status: 'placeholder', message: 'To be implemented' };
-    }
-}
-
-// ... More experiment classes will be added as separate files
 
 /**
  * Global experiment framework instance
  */
 const experimentFramework = new ExperimentFramework();
 
-// Register initial experiments (placeholders)
-experimentFramework.registerExperiment('price-elasticity', new PriceElasticityExperiment());
-experimentFramework.registerExperiment('effort-elasticity', new EffortElasticityExperiment());
-experimentFramework.registerExperiment('fixed-fees', new FixedFeesExperiment());
-experimentFramework.registerExperiment('static-pricing', new StaticPricingExperiment());
 
 // Export for use in other modules
 if (typeof window !== 'undefined') {
