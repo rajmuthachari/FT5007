@@ -198,6 +198,7 @@ function initializeLogLogChart() {
  */
 function setupEventListeners() {
     // Parameter sliders
+    document.getElementById('durationSlider').addEventListener('input', updateParameters);
     document.getElementById('alphaSlider').addEventListener('input', updateParameters);
     document.getElementById('betaSlider').addEventListener('input', updateParameters);
     document.getElementById('gammaSlider').addEventListener('input', updateParameters);
@@ -220,6 +221,8 @@ function updateParameters() {
     const gamma = document.getElementById('gammaSlider').value;
     const target = document.getElementById('targetSlider').value;
     const price = document.getElementById('priceSlider').value;
+    const duration = document.getElementById('durationSlider').value;
+    document.getElementById('durationValue').textContent = parseInt(duration);
     
     // Update display values
     document.getElementById('alphaValue').textContent = parseInt(alpha).toLocaleString();
@@ -268,6 +271,7 @@ function runSimulation() {
  */
 function runBasicSimulation() {
     // Get parameters
+    const duration = parseFloat(document.getElementById('durationSlider').value);
     const alpha = parseFloat(document.getElementById('alphaSlider').value);
     const beta = parseFloat(document.getElementById('betaSlider').value);
     const gamma = parseFloat(document.getElementById('gammaSlider').value);
@@ -277,25 +281,26 @@ function runBasicSimulation() {
     
     // Create model
     currentModel = new CrowdfundingModel({
-        alpha: alpha,
-        beta: beta,
-        gamma: gamma,
-        duration: 30,
-        target: target,
-        initialPrice: initialPrice
+    alpha: alpha,
+    beta: beta,
+    gamma: gamma,
+    duration: duration,  // Now dynamic instead of hardcoded 30
+    target: target,
+    initialPrice: initialPrice
     });
     
     // Create strategy
     let strategy;
     switch(strategyType) {
-        case 'dynamic':
-            strategy = new DynamicPricingStrategy(initialPrice);
-            break;
         case 'bonding':
             strategy = new BondingCurveStrategy(initialPrice);
             break;
+        case 'dynamic':
+            strategy = new DynamicPricingStrategy(initialPrice, 150, duration);
+            break;
         default:
             strategy = new FixedPricingStrategy(initialPrice);
+
     }
     
     // Run simulation
@@ -447,6 +452,8 @@ function resetSimulation() {
     document.getElementById('targetSlider').value = 100000;
     document.getElementById('priceSlider').value = 1;
     document.getElementById('strategySelect').value = 'fixed';
+    document.getElementById('durationSlider').value = 30;
+
     
     updateParameters();
     
