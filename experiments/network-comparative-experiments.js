@@ -159,7 +159,7 @@ class ViralMechanicsExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     viralCoefficient: config.coefficient,
@@ -169,7 +169,7 @@ class ViralMechanicsExperiment extends BaseExperiment {
                 let strategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         strategy = new BondingCurveStrategy(parameters.initialPrice);
@@ -266,7 +266,7 @@ class CommunityBuildingExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     viralCoefficient: strategy.viral,
@@ -279,7 +279,7 @@ class CommunityBuildingExperiment extends BaseExperiment {
                 let pricingStrategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        pricingStrategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        pricingStrategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         pricingStrategy = new BondingCurveStrategy(parameters.initialPrice);
@@ -395,7 +395,7 @@ class TraditionalVsWeb3Experiment extends BaseExperiment {
                     alpha: parameters.alpha * platform.features.networkEffects, // Adjust for platform
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     viralCoefficient: platform.type === 'web3' ? 0.15 : 0.08,
@@ -405,7 +405,7 @@ class TraditionalVsWeb3Experiment extends BaseExperiment {
                 let strategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         // Bonding curves more natural for Web3
@@ -541,7 +541,7 @@ class PlatformComparisonExperiment extends BaseExperiment {
                     alpha: parameters.alpha * platform.networkStrength,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     viralCoefficient: 0.1,
@@ -553,7 +553,7 @@ class PlatformComparisonExperiment extends BaseExperiment {
                 if (platform.features.includes('bonding-curves')) {
                     strategy = new BondingCurveStrategy(parameters.initialPrice);
                 } else if (platform.features.includes('dynamic-pricing')) {
-                    strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                    strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                 } else {
                     strategy = new FixedPricingStrategy(parameters.initialPrice);
                 }

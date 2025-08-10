@@ -155,7 +155,7 @@ class MarketCyclesExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     marketCondition: market.condition
@@ -164,7 +164,7 @@ class MarketCyclesExperiment extends BaseExperiment {
                 let strategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         strategy = new BondingCurveStrategy(parameters.initialPrice);
@@ -186,7 +186,7 @@ class MarketCyclesExperiment extends BaseExperiment {
                 
                 // Calculate recovery time (days to reach 50% of target)
                 const recoveryDay = result.history.findIndex(h => h.cumulativeRaised >= parameters.target * 0.5);
-                avgRecoveryTime += recoveryDay === -1 ? parameters.duration || 30 : recoveryDay + 1;
+                avgRecoveryTime += recoveryDay === -1 ? parameters.duration : recoveryDay + 1;
             }
             
             results.push({
@@ -264,7 +264,7 @@ class CompetitionExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     competitorCount: competitorCount
@@ -273,7 +273,7 @@ class CompetitionExperiment extends BaseExperiment {
                 let strategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         strategy = new BondingCurveStrategy(parameters.initialPrice);
@@ -404,7 +404,7 @@ class ExternalShocksExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     shockEvents: scenario.shocks
@@ -413,7 +413,7 @@ class ExternalShocksExperiment extends BaseExperiment {
                 let strategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         strategy = new BondingCurveStrategy(parameters.initialPrice);

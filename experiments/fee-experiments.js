@@ -127,7 +127,7 @@ class FixedFeesExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     feeStructure: 'fixed',
@@ -137,7 +137,7 @@ class FixedFeesExperiment extends BaseExperiment {
                 let strategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         strategy = new BondingCurveStrategy(parameters.initialPrice);
@@ -234,7 +234,7 @@ class DynamicFeesExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     feeStructure: feeStructure.type,
@@ -244,7 +244,7 @@ class DynamicFeesExperiment extends BaseExperiment {
                 let strategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         strategy = new BondingCurveStrategy(parameters.initialPrice);
@@ -346,7 +346,7 @@ class HybridFeesExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     feeStructure: 'hybrid',
@@ -356,7 +356,7 @@ class HybridFeesExperiment extends BaseExperiment {
                 let strategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         strategy = new BondingCurveStrategy(parameters.initialPrice);

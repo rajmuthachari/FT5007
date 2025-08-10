@@ -155,7 +155,7 @@ class MultiRoundStrategiesExperiment extends BaseExperiment {
                 name: 'Single Round (Control)',
                 rounds: 1,
                 targets: [parameters.target],
-                durations: [parameters.duration || 30],
+                durations: [parameters.duration],
                 strategies: ['fixed']
             },
             {
@@ -196,7 +196,7 @@ class MultiRoundStrategiesExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 3; // Reduced due to complexity
+        const numTrials = 5; // Reduced due to complexity
         
         for (const config of multiRoundConfigs) {
             console.log(`Testing ${config.name} strategy`);

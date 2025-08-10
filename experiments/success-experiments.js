@@ -169,7 +169,7 @@ class FundingThresholdsExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     softCap: parameters.target * config.softCap,
@@ -179,7 +179,7 @@ class FundingThresholdsExperiment extends BaseExperiment {
                 let strategy;
                 switch(parameters.strategy) {
                     case 'dynamic':
-                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration || 30);
+                        strategy = new DynamicPricingStrategy(parameters.initialPrice, 150, parameters.duration);
                         break;
                     case 'bonding':
                         strategy = new BondingCurveStrategy(parameters.initialPrice);
@@ -283,7 +283,7 @@ class SuccessMetricsExperiment extends BaseExperiment {
                     alpha: parameters.alpha,
                     beta: parameters.beta,
                     gamma: parameters.gamma,
-                    duration: parameters.duration || 30,
+                    duration: parameters.duration,
                     target: parameters.target,
                     initialPrice: parameters.initialPrice,
                     softCap: parameters.target * 0.6,
@@ -294,7 +294,7 @@ class SuccessMetricsExperiment extends BaseExperiment {
                 const strategy = {
                     getPrice: (day, cumulativeRaised, target) => parameters.initialPrice,
                     getEffort: (day, cumulativeRaised, target) => {
-                        const baseEffort = 150 / (parameters.duration || 30);
+                        const baseEffort = 150 / (parameters.duration);
                         const allocation = focusStrategy.effortAllocation;
                         
                         // Different focus areas have different effectiveness multipliers
