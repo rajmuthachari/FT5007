@@ -9,7 +9,7 @@ class DurationOptimizationExperiment extends BaseExperiment {
         
         const durations = [7, 14, 30, 60, 90];
         const results = [];
-        const numTrials = 100; // Run 10 trials per duration for statistical significance
+        const numTrials = 20; // Run 20 trials per duration for statistical significance
         
         for (const duration of durations) {
             console.log(`Testing duration: ${duration} days`);

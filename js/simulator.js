@@ -312,12 +312,12 @@ function runBasicSimulation() {
     
     // Create model
     currentModel = new CrowdfundingModel({
-    alpha: alpha,
-    beta: beta,
-    gamma: gamma,
-    duration: duration,  // Now dynamic instead of hardcoded 30
-    target: target,
-    initialPrice: initialPrice
+        alpha: alpha,
+        beta: beta,
+        gamma: gamma,
+        duration: duration,
+        target: target,
+        initialPrice: initialPrice
     });
     
     // Create strategy
@@ -331,7 +331,6 @@ function runBasicSimulation() {
             break;
         default:
             strategy = new FixedPricingStrategy(initialPrice);
-
     }
     
     // Run simulation
@@ -345,6 +344,8 @@ function runBasicSimulation() {
 }
 
 
+
+
 /**
  * Run experiment (placeholder for future implementation)
  */
@@ -353,6 +354,7 @@ async function runExperiment(experimentType) {
     const button = document.getElementById('runSimBtn');
     const summaryDiv = document.getElementById('resultsSummary');
     
+    currentResults = null; // Reset current results
     // Define parameters from UI inputs
     const parameters = {
         alpha: parseFloat(document.getElementById('alphaSlider').value),
@@ -697,7 +699,23 @@ function updateLogLogChart(history) {
 /**
  * Update results summary
  */
+
 function updateResultsSummary(results) {
+    const summaryDiv = document.getElementById('resultsSummary');
+    const successClass = results.success ? 'status-success' : 'status-failed';
+    
+    summaryDiv.innerHTML = `
+        <p>Status: <span class="${successClass}">${results.success ? 'SUCCESS' : 'FAILED'}</span></p>
+        <p>Total Raised: <span class="parameter-value">$${results.totalRaised.toLocaleString(undefined, {maximumFractionDigits: 0})}</span></p>
+        <p>Total Costs: <span class="parameter-value">$${results.totalCosts.toLocaleString(undefined, {maximumFractionDigits: 0})}</span></p>
+        <p>Net Profit: <span class="parameter-value" style="color: ${results.netProfit > 0 ? '#10b981' : '#ef4444'}">$${results.netProfit.toLocaleString(undefined, {maximumFractionDigits: 0})}</span></p>
+        <p>ROI: <span class="parameter-value">${results.roi.toFixed(1)}%</span></p>
+        <p>Total Tokens: <span class="parameter-value">${results.totalDemand.toLocaleString(undefined, {maximumFractionDigits: 0})}</span></p>
+        <p>Success Rate: <span class="parameter-value">${((results.totalRaised / currentModel.target) * 100).toFixed(1)}%</span></p>
+    `;
+}
+
+/*function updateResultsSummary(results) {
     const summaryDiv = document.getElementById('resultsSummary');
     const successClass = results.success ? 'status-success' : 'status-failed';
     
@@ -708,7 +726,7 @@ function updateResultsSummary(results) {
         <p>Success Rate: <span class="parameter-value">${((results.totalRaised / currentModel.target) * 100).toFixed(1)}%</span></p>
         <p>Avg Token Price: <span class="parameter-value">$${(results.totalRaised / results.totalDemand).toFixed(2)}</span></p>
     `;
-}
+}*/
 
 /**
  * Reset simulation
@@ -722,6 +740,7 @@ function resetSimulation() {
     document.getElementById('priceSlider').value = 1;
     document.getElementById('strategySelect').value = 'fixed';
     document.getElementById('durationSlider').value = 30;
+    document.getElementById('experimentSelect').value = 'basic'; 
 
     
     updateParameters();

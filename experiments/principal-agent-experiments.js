@@ -241,7 +241,7 @@ class InformationAsymmetryExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const config of asymmetryLevels) {
             console.log(`Testing ${config.name}`);
@@ -344,7 +344,7 @@ class IncentiveMechanismsExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const mechanism of mechanisms) {
             console.log(`Testing ${mechanism.name} incentive mechanism`);
@@ -448,7 +448,7 @@ class GovernanceModelsExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const governance of governanceModels) {
             console.log(`Testing ${governance.name} governance model`);

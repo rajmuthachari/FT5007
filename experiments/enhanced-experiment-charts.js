@@ -11,8 +11,13 @@ function updateExperimentResultsWithCharts(experimentType, results) {
     console.log('📊 ENHANCED CHARTS: Will show specialized visualization');
     
     // Update the results summary panel (direct call to avoid circular dependency)
-    updateExperimentResultsDisplay(experimentType, results);
+    //updateExperimentResultsDisplay(experimentType, results);
     
+    if (typeof updateExperimentResultsDisplay === 'function' && window.updateExperimentResultsDisplay) {
+        updateExperimentResultsDisplay(experimentType, results); // This will call the enhanced one from load-all-experiments.js
+    } else {
+        updateExperimentResultsDisplaySimple(experimentType, results); // Fallback to simple
+    }
     // Remove any existing no-graph messages first
     removeNoGraphMessage('demandChart');
     removeNoGraphMessage('revenueChart');
@@ -90,11 +95,20 @@ function updateExperimentResultsWithCharts(experimentType, results) {
 }
 
 // Direct results display function (no circular dependency)
-function updateExperimentResultsDisplay(experimentType, results) {
+//function updateExperimentResultsDisplay(experimentType, results) {
+function updateExperimentResultsDisplaySimple(experimentType, results) {
+
     console.log('📊 Displaying experiment results:', results);
     
     const summaryDiv = document.getElementById('resultsSummary');
     
+    // Use the enhanced display function from load-all-experiments.js if available
+    if (typeof updateExperimentResults === 'function') {
+        updateExperimentResults(experimentType, results);
+        return;
+    }
+    
+    // Fallback to simple display if enhanced version not available
     if (results.experimentType === 'duration-optimization') {
         let html = `
             <div style="border: 2px solid #10b981; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
@@ -125,7 +139,7 @@ function updateExperimentResultsDisplay(experimentType, results) {
         return;
     }
     
-    // Generic experiment results display
+    // Generic display for other experiments
     let html = `
         <div style="border: 2px solid #8b5cf6; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
             <h4 style="color: #8b5cf6; font-weight: bold; margin-bottom: 0.5rem;">
