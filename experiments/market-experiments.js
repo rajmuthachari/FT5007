@@ -140,7 +140,7 @@ class MarketCyclesExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         
         for (const market of marketConditions) {
             console.log(`Testing ${market.name} conditions`);
@@ -249,7 +249,7 @@ class CompetitionExperiment extends BaseExperiment {
         // Test different competition levels
         const competitionLevels = [0, 1, 2, 3, 5, 8, 12];
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         
         for (const competitorCount of competitionLevels) {
             console.log(`Testing with ${competitorCount} competitors`);
@@ -389,7 +389,7 @@ class ExternalShocksExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         
         for (const scenario of shockScenarios) {
             console.log(`Testing ${scenario.name} scenario`);

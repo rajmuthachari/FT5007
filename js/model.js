@@ -18,8 +18,28 @@ class CrowdfundingModel {
         
         // Time series data storage
         this.history = [];
+
+        //adding crowdfunding cost function on 27th aug 2025
+        this.costFunction = new CostFunction(params.c1 || 10, params.c2 || 0.5);
+
     }
     
+    static BENCHMARK_CAMPAIGNS = {
+        kickstarter_avg: {
+            duration: 30,
+            successRate: 0.36, // 36% success rate (Kickstarter average)
+            avgRaised: 25000,
+            medianRaised: 8000
+        },
+        web3_token: {
+            duration: 14,
+            successRate: 0.58, // Higher for token sales
+            avgRaised: 450000,
+            medianRaised: 120000
+        }
+    };
+
+
     /**
      * Calculate demand using multiplicative model
      * D(t) = α × E(t)^β × P(t)^(-γ) × ε(t)
@@ -162,15 +182,44 @@ class CrowdfundingModel {
                 percentComplete: (cumulativeRaised / this.target) * 100
             });
         }
+        const totalCosts = this.history.reduce((sum, h) => 
+        sum + this.costFunction.calculate(h.effort), 0
+        );
         
         return {
             success: cumulativeRaised >= this.target,
             totalRaised: cumulativeRaised,
             totalDemand: cumulativeDemand,
+            totalCosts: totalCosts,
+            netProfit: cumulativeRaised - totalCosts,
+            roi: totalCosts > 0 ? ((cumulativeRaised - totalCosts) / totalCosts) * 100 : 0,
             history: this.history
         };
     }
     
+    validateResults(results, benchmarkType = 'kickstarter_avg') {
+        const benchmark = CrowdfundingModel.BENCHMARK_CAMPAIGNS[benchmarkType];
+        
+        const validation = {
+            benchmarkType: benchmarkType,
+            successRateDiff: (results.success ? 100 : 0) - (benchmark.successRate * 100),
+            raisedRatio: results.totalRaised / benchmark.avgRaised,
+            isRealistic: Math.abs((results.success ? 100 : 0) - benchmark.successRate * 100) < 20,
+            message: ''
+        };
+        
+        if (validation.raisedRatio > 10) {
+            validation.message = 'Warning: Results significantly exceed typical campaigns';
+        } else if (validation.raisedRatio < 0.1) {
+            validation.message = 'Warning: Results significantly underperform typical campaigns';
+        } else {
+            validation.message = 'Results within realistic range';
+        }
+        
+        return validation;
+    }
+
+
     /**
      * Calculate optimal price given current parameters
      * For profit maximization: P* = γ/(γ-1) × marginal cost

@@ -9,7 +9,7 @@ class DurationOptimizationExperiment extends BaseExperiment {
         
         const durations = [7, 14, 30, 60, 90];
         const results = [];
-        const numTrials = 10; // Run 10 trials per duration for statistical significance
+        const numTrials = 100; // Run 10 trials per duration for statistical significance
         
         for (const duration of durations) {
             console.log(`Testing duration: ${duration} days`);
@@ -68,12 +68,27 @@ class DurationOptimizationExperiment extends BaseExperiment {
         const bestDuration = results.reduce((best, current) => 
             current.successRate > best.successRate ? current : best
         );
+
+        // ADD VALIDATION HERE - validate the optimal configuration
+        const testModel = new CrowdfundingModel({
+            alpha: parameters.alpha,
+            beta: parameters.beta,
+            gamma: parameters.gamma,
+            duration: bestDuration.duration,  // Use the optimal duration
+            target: parameters.target,
+            initialPrice: parameters.initialPrice
+        });
+        
+        const testStrategy = new FixedPricingStrategy(parameters.initialPrice);
+        const testRun = testModel.simulateCampaign(testStrategy);
+        const validation = campaignValidator.generateValidationReport(testRun, testModel);
         
         return {
             status: 'complete',
             experimentType: 'duration-optimization',
             results: results,
             optimal: bestDuration,
+            validation: validation,
             summary: `Optimal duration: ${bestDuration.duration} days (${bestDuration.successRate.toFixed(1)}% success rate)`
         };
     }

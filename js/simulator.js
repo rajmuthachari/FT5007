@@ -7,6 +7,14 @@
 let demandChart, revenueChart, logLogChart;
 let currentModel, currentResults;
 
+// adding for chart cleanup and fixing memory leaks, adding progress indicator..
+let chartUpdateTimer = null;
+let experimentProgress = {
+    current: 0,
+    total: 0,
+    status: 'idle'
+};
+
 // Chart configuration
 const chartOptions = {
     responsive: true,
@@ -37,6 +45,29 @@ document.addEventListener('DOMContentLoaded', function() {
     updateParameters();
     setupEventListeners();
 });
+
+
+// Add cleanup function
+
+function cleanupCharts() {
+    // Clear any pending timers
+    if (chartUpdateTimer) {
+        clearTimeout(chartUpdateTimer);
+        chartUpdateTimer = null;
+    }
+    
+    // Clear chart data properly
+    [demandChart, revenueChart, logLogChart].forEach(chart => {
+        if (chart) {
+            chart.data.labels = [];
+            chart.data.datasets.forEach(dataset => {
+                dataset.data = [];
+            });
+            chart.update('none');
+        }
+    });
+}
+
 
 /**
  * Initialize all charts
@@ -317,7 +348,162 @@ function runBasicSimulation() {
 /**
  * Run experiment (placeholder for future implementation)
  */
+
 async function runExperiment(experimentType) {
+    const button = document.getElementById('runSimBtn');
+    const summaryDiv = document.getElementById('resultsSummary');
+    
+    // Define parameters from UI inputs
+    const parameters = {
+        alpha: parseFloat(document.getElementById('alphaSlider').value),
+        beta: parseFloat(document.getElementById('betaSlider').value),
+        gamma: parseFloat(document.getElementById('gammaSlider').value),
+        duration: parseFloat(document.getElementById('durationSlider').value),
+        target: parseFloat(document.getElementById('targetSlider').value),
+        initialPrice: parseFloat(document.getElementById('priceSlider').value),
+        strategy: document.getElementById('strategySelect').value
+    };
+    
+    // Show initial progress
+    summaryDiv.innerHTML = `
+        <div style="border: 2px solid #fbbf24; border-radius: 8px; padding: 1rem;">
+            <h4 style="color: #fbbf24;">🔄 Experiment Running...</h4>
+            <p style="color: #fde047;">Running ${experimentType} experiment...</p>
+        </div>
+    `;
+    
+    try {
+        // Clean up before starting
+        cleanupCharts();
+        
+        // Run experiment WITHOUT the progress callback
+        const results = await experimentFramework.runExperiment(experimentType, parameters);
+        
+        // Update results
+        updateExperimentResultsWithCharts(experimentType, results);
+        
+    } catch (error) {
+        console.error('Experiment error:', error);
+        summaryDiv.innerHTML = `
+            <div style="border: 2px solid #ef4444; border-radius: 8px; padding: 1rem;">
+                <h4 style="color: #ef4444;">❌ Experiment Error</h4>
+                <p style="color: #f87171;">${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+
+/*
+async function runExperiment(experimentType) {
+    const button = document.getElementById('runSimBtn');
+    const summaryDiv = document.getElementById('resultsSummary');
+    
+    // ADD THIS BLOCK - Define parameters from UI inputs
+    const parameters = {
+        alpha: parseFloat(document.getElementById('alphaSlider').value),
+        beta: parseFloat(document.getElementById('betaSlider').value),
+        gamma: parseFloat(document.getElementById('gammaSlider').value),
+        duration: parseFloat(document.getElementById('durationSlider').value), // Added duration
+        target: parseFloat(document.getElementById('targetSlider').value),
+        initialPrice: parseFloat(document.getElementById('priceSlider').value),
+        strategy: document.getElementById('strategySelect').value
+    };
+    
+    // Show initial progress
+    summaryDiv.innerHTML = `
+        <div style="border: 2px solid #fbbf24; border-radius: 8px; padding: 1rem;">
+            <h4 style="color: #fbbf24;">🔄 Experiment Running...</h4>
+            <p style="color: #fde047;">Initializing ${experimentType}...</p>
+            <div style="background: #374151; border-radius: 4px; height: 20px; margin-top: 10px; overflow: hidden;">
+                <div id="progressBar" style="background: linear-gradient(90deg, #fbbf24, #f59e0b); height: 100%; width: 0%; transition: width 0.3s;"></div>
+            </div>
+            <p id="progressText" style="color: #9ca3af; margin-top: 5px; font-size: 0.875rem;">Starting...</p>
+        </div>
+    `;
+    
+    try {
+        // Clean up before starting
+        cleanupCharts();
+        
+        // Run experiment with progress callback
+        const results = await experimentFramework.runExperiment(experimentType, parameters, (progress) => {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            if (progressBar) {
+                progressBar.style.width = `${progress.percent}%`;
+            }
+            if (progressText) {
+                progressText.textContent = `Trial ${progress.current} of ${progress.total} (${progress.percent.toFixed(0)}%)`;
+            }
+        });
+        
+        // Update results
+        updateExperimentResultsWithCharts(experimentType, results);
+        
+    } catch (error) {
+        summaryDiv.innerHTML = `
+            <div style="border: 2px solid #ef4444; border-radius: 8px; padding: 1rem;">
+                <h4 style="color: #ef4444;">❌ Experiment Error</h4>
+                <p style="color: #f87171;">${error.message}</p>
+            </div>
+        `;
+    }
+}*/
+
+
+/*
+// Update runExperiment to show progress
+async function runExperiment(experimentType) {
+    const button = document.getElementById('runSimBtn');
+    const summaryDiv = document.getElementById('resultsSummary');
+
+    
+    
+    // Show initial progress
+    summaryDiv.innerHTML = `
+        <div style="border: 2px solid #fbbf24; border-radius: 8px; padding: 1rem;">
+            <h4 style="color: #fbbf24;">🔄 Experiment Running...</h4>
+            <p style="color: #fde047;">Initializing ${experimentType}...</p>
+            <div style="background: #374151; border-radius: 4px; height: 20px; margin-top: 10px; overflow: hidden;">
+                <div id="progressBar" style="background: linear-gradient(90deg, #fbbf24, #f59e0b); height: 100%; width: 0%; transition: width 0.3s;"></div>
+            </div>
+            <p id="progressText" style="color: #9ca3af; margin-top: 5px; font-size: 0.875rem;">Starting...</p>
+        </div>
+    `;
+    
+    try {
+        // Clean up before starting
+        cleanupCharts();
+        
+        // Run experiment with progress callback
+        const results = await experimentFramework.runExperiment(experimentType, parameters, (progress) => {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            if (progressBar) {
+                progressBar.style.width = `${progress.percent}%`;
+            }
+            if (progressText) {
+                progressText.textContent = `Trial ${progress.current} of ${progress.total} (${progress.percent.toFixed(0)}%)`;
+            }
+        });
+        
+        // Update results
+        updateExperimentResultsWithCharts(experimentType, results);
+        
+    } catch (error) {
+        summaryDiv.innerHTML = `
+            <div style="border: 2px solid #ef4444; border-radius: 8px; padding: 1rem;">
+                <h4 style="color: #ef4444;">❌ Experiment Error</h4>
+                <p style="color: #f87171;">${error.message}</p>
+            </div>
+        `;
+    }
+}
+*/
+
+
+/*async function runExperiment(experimentType) {
     console.log('🔍 DEBUG: Starting runExperiment');
     console.log('🔍 DEBUG: Framework loaded?', typeof experimentFramework);
     console.log('🔍 DEBUG: Selected experiment:', experimentType);
@@ -376,6 +562,8 @@ async function runExperiment(experimentType) {
         }
     }
 }
+*/
+
 
 /**
  * Show placeholder message for unimplemented experiments
@@ -449,11 +637,29 @@ function updateExperimentResults(experimentType, results) {
 /**
  * Update all charts with new data
  */
+
+
+
+// Update chart update functions to use requestAnimationFrame
+function updateCharts(history) {
+    requestAnimationFrame(() => {
+        cleanupCharts();
+        updateDemandChart(history);
+        updateRevenueChart(history);
+        updateLogLogChart(history);
+    });
+}
+
+
+/*
+
 function updateCharts(history) {
     updateDemandChart(history);
     updateRevenueChart(history);
     updateLogLogChart(history);
 }
+*/
+
 
 /**
  * Update Price & Demand Chart
@@ -580,6 +786,8 @@ function exportResults() {
         alert('An error occurred while exporting results.');
     }
 }
+
+
 
 // Make functions globally accessible for any remaining inline handlers
 window.runSimulation = runSimulation;

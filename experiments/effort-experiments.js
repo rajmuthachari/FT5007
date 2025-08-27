@@ -125,7 +125,7 @@ class EffortPatternsExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         const totalBudget = 150;
         
         for (const strategyConfig of effortStrategies) {
