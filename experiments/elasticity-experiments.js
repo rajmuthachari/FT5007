@@ -80,11 +80,25 @@ class PriceElasticityExperiment extends BaseExperiment {
             current.successRate > best.successRate ? current : best
         );
         
+        // ADD VALIDATION HERE - validate the optimal configuration
+        const testModel = new CrowdfundingModel({
+            alpha: parameters.alpha,
+            beta: parameters.beta,
+            gamma: parameters.gamma,
+            duration: parameters.duration,  // Use the optimal duration
+            target: parameters.target,
+            initialPrice: parameters.initialPrice
+        });
+        const testStrategy = new FixedPricingStrategy(parameters.initialPrice);
+        const testRun = testModel.simulateCampaign(testStrategy);
+        const validation = campaignValidator.generateValidationReport(testRun, testModel);
+        
         return {
             status: 'complete',
             experimentType: 'price-elasticity',
             results: results,
             optimal: bestGamma,
+            validation: validation,
             summary: `Optimal price elasticity: γ = ${bestGamma.gamma} (${bestGamma.successRate.toFixed(1)}% success rate)`,
             insights: this.generatePriceElasticityInsights(results)
         };
@@ -120,7 +134,7 @@ class EffortElasticityExperiment extends BaseExperiment {
         // Test beta values from low (0.1) to high (0.9)
         const betaValues = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         
         for (const beta of betaValues) {
             console.log(`Testing effort elasticity β = ${beta}`);

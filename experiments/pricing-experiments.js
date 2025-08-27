@@ -163,7 +163,7 @@ class StaticPricingExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         
         for (const strategyConfig of strategies) {
             console.log(`Testing ${strategyConfig.name}`);
@@ -267,7 +267,7 @@ class DynamicPricingExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         
         for (const strategyConfig of strategies) {
             console.log(`Testing ${strategyConfig.name}`);
@@ -366,7 +366,7 @@ class BondingCurvesExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         
         for (const config of curveConfigs) {
             console.log(`Testing ${config.name} bonding curve`);

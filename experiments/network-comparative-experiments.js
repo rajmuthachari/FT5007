@@ -143,7 +143,7 @@ class ViralMechanicsExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         
         for (const config of viralConfigs) {
             console.log(`Testing ${config.name}`);
@@ -203,11 +203,26 @@ class ViralMechanicsExperiment extends BaseExperiment {
             current.avgViralityScore > best.avgViralityScore ? current : best
         );
         
+        // ADD VALIDATION HERE - validate the optimal configuration
+        const testModel = new CrowdfundingModel({
+            alpha: parameters.alpha,
+            beta: parameters.beta,
+            gamma: parameters.gamma,
+            duration: parameters.duration,  // Use the optimal duration
+            target: parameters.target,
+            initialPrice: parameters.initialPrice
+        });
+        
+        const testStrategy = new FixedPricingStrategy(parameters.initialPrice);
+        const testRun = testModel.simulateCampaign(testStrategy);
+        const validation = campaignValidator.generateValidationReport(testRun, testModel);
+
         return {
             status: 'complete',
             experimentType: 'viral-mechanics',
             results: results,
             optimal: bestViral,
+            validation: validation, 
             summary: `Best viral configuration: ${bestViral.name} (${bestViral.avgViralityScore.toFixed(1)} virality score, ${bestViral.successRate.toFixed(1)}% success rate)`,
             insights: this.generateViralInsights(results)
         };
@@ -250,7 +265,7 @@ class CommunityBuildingExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         
         for (const strategy of communityStrategies) {
             console.log(`Testing ${strategy.name} strategy`);
@@ -378,7 +393,7 @@ class TraditionalVsWeb3Experiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         
         for (const platform of platformTypes) {
             console.log(`Testing ${platform.name} platform`);
@@ -525,7 +540,7 @@ class PlatformComparisonExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 100;
         
         for (const platform of platforms) {
             console.log(`Testing ${platform.name} platform`);
