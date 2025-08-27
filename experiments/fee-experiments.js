@@ -112,7 +112,7 @@ class FixedFeesExperiment extends BaseExperiment {
         // Test different fixed fee rates
         const feeRates = [0.02, 0.03, 0.05, 0.07, 0.10, 0.15];
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const feeRate of feeRates) {
             console.log(`Testing fixed fee rate: ${(feeRate * 100).toFixed(1)}%`);
@@ -218,7 +218,7 @@ class DynamicFeesExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const feeStructure of feeStructures) {
             console.log(`Testing ${feeStructure.name} fee structure`);
@@ -331,7 +331,7 @@ class HybridFeesExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const model of hybridModels) {
             console.log(`Testing ${model.name}`);

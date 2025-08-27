@@ -153,7 +153,7 @@ class FundingThresholdsExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const config of thresholdConfigs) {
             console.log(`Testing ${config.name} thresholds`);
@@ -266,7 +266,7 @@ class SuccessMetricsExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const focusStrategy of focusStrategies) {
             console.log(`Testing ${focusStrategy.name} strategy`);

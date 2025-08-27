@@ -196,7 +196,7 @@ class MultiRoundStrategiesExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100; // Reduced due to complexity
+        const numTrials = 20; // Reduced due to complexity
         
         for (const config of multiRoundConfigs) {
             console.log(`Testing ${config.name} strategy`);

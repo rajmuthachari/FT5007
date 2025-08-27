@@ -143,7 +143,7 @@ class ViralMechanicsExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const config of viralConfigs) {
             console.log(`Testing ${config.name}`);
@@ -265,7 +265,7 @@ class CommunityBuildingExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const strategy of communityStrategies) {
             console.log(`Testing ${strategy.name} strategy`);
@@ -393,7 +393,7 @@ class TraditionalVsWeb3Experiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const platform of platformTypes) {
             console.log(`Testing ${platform.name} platform`);
@@ -540,7 +540,7 @@ class PlatformComparisonExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         
         for (const platform of platforms) {
             console.log(`Testing ${platform.name} platform`);

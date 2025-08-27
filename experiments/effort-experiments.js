@@ -125,7 +125,7 @@ class EffortPatternsExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 100;
+        const numTrials = 20;
         const totalBudget = 150;
         
         for (const strategyConfig of effortStrategies) {
@@ -235,7 +235,7 @@ class EffortAllocationExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 20;
         const totalBudget = 150;
         
         for (const allocation of allocationStrategies) {
@@ -353,7 +353,7 @@ class PlatformEffortExperiment extends BaseExperiment {
         ];
         
         const results = [];
-        const numTrials = 5;
+        const numTrials = 20;
         const platformMultiplier = 1.5; // Platform effort has 50% multiplier effect
         
         for (const combination of effortCombinations) {
