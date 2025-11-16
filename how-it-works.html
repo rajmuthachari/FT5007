@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Mechanics of EquiCurve - How Dynamic Token Crowdfunding Works</title>
+    <meta name="description" content="A comprehensive guide to understanding the mathematical models, pricing strategies, and economic principles behind EquiCurve's token crowdfunding simulator">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <style>
+        .equation-box {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-size: 1.25rem;
+        }
+        .concept-card {
+            transition: all 0.3s ease;
+        }
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold gradient-text">EquiCurve</a>
+                    <span class="ml-4 text-gray-400 hidden md:inline">Mechanics Guide</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="index.html" class="hover:text-purple-400 transition-colors">Home</a>
+                    <a href="simulatorv2.html" class="hover:text-purple-400 transition-colors">Simulator</a>
+                    <a href="index.html#research" class="hover:text-purple-400 transition-colors">Research</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 px-4">
+        <!-- Background animation -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 float-animation"></div>
+            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 float-animation" style="animation-delay: 3s;"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-5xl mx-auto text-center">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                <span class="gradient-text">The Mechanics</span><br/>
+                Behind EquiCurve
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                A deep dive into the mathematical models, economic principles, and strategic frameworks that power dynamic token crowdfunding simulations
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-4 pb-20">
+        
+        <!-- Core Demand Model -->
+        <section class="mb-20">
+            <div class="glass rounded-2xl p-8 md:p-12">
+                <h2 class="text-4xl font-bold mb-6 gradient-text">The Core Demand Model</h2>
+                
+                <p class="text-lg text-gray-300 mb-6">
+                    At the heart of EquiCurve lies a multiplicative demand function that captures the complex interactions between price, effort, and market dynamics in token crowdfunding campaigns.
+                </p>
+                
+                <div class="equation-box">
+                    <div class="text-2xl font-bold mb-2">D(t) = α × E(t)<sup>β</sup> × P(t)<sup>-γ</sup> × ε(t)</div>
+                    <div class="text-sm text-gray-400 mt-2">where t represents time (day) in the campaign</div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mt-8">
+                    <div class="concept-card glass rounded-xl p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">Component Breakdown</h3>
+                        <ul class="space-y-3 text-gray-300">
+                            <li><strong class="text-white">α (Alpha):</strong> Base demand level representing the total addressable market size. Higher values indicate larger potential buyer pools.</li>
+                            <li><strong class="text-white">E(t):</strong> Entrepreneur effort at time t, measured on a 0-10 scale. Represents marketing, community engagement, and project development intensity.</li>
+                            <li><strong class="text-white">β (Beta):</strong> Effort elasticity (typically 0.3-0.7). Determines how responsive demand is to changes in effort. Higher values mean effort has more impact.</li>
+                            <li><strong class="text-white">P(t):</strong> Token price at time t in USD. The price point at which tokens are offered to backers.</li>
+                            <li><strong class="text-white">γ (Gamma):</strong> Price elasticity (typically 0.8-1.5). Measures price sensitivity. Values > 1 indicate elastic demand (price changes significantly affect demand).</li>
+                            <li><strong class="text-white">ε(t):</strong> Random market noise following a log-normal distribution. Captures unpredictable market fluctuations and external factors.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="concept-card glass rounded-xl p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">Why This Model?</h3>
+                        <ul class="space-y-3 text-gray-300">
+                            <li><strong class="text-white">Multiplicative Structure:</strong> Reflects real-world interactions where effort and price effects compound rather than simply add.</li>
+                            <li><strong class="text-white">Log-Linear Properties:</strong> Enables easy transformation to linear regression for parameter estimation from historical data.</li>
+                            <li><strong class="text-white">Empirical Foundation:</strong> Based on established economic literature on crowdfunding (Belleflamme et al., 2014) and Web3 tokenomics research.</li>
+                            <li><strong class="text-white">Flexibility:</strong> Parameters can be calibrated to match different market segments, from early-stage startups to established Web3 projects.</li>
+                            <li><strong class="text-white">Realistic Dynamics:</strong> The negative price exponent ensures higher prices reduce demand, while positive effort exponent rewards active marketing.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Strategies -->
+        <section class="mb-20">
+            <div class="glass rounded-2xl p-8 md:p-12">
+                <h2 class="text-4xl font-bold mb-8 gradient-text">Pricing Strategies</h2>
+                
+                <p class="text-lg text-gray-300 mb-8">
+                    EquiCurve implements three distinct pricing strategies, each with unique characteristics and optimal use cases:
+                </p>
+                
+                <div class="space-y-8">
+                    <!-- Fixed Pricing -->
+                    <div class="concept-card glass rounded-xl p-6">
+                        <div class="flex items-start mb-4">
+                            <div class="step-number">1</div>
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-semibold mb-2">Fixed Price Strategy</h3>
+                                <p class="text-gray-400 text-sm mb-4">Simple, predictable, and transparent</p>
+                            </div>
+                        </div>
+                        
+                        <div class="highlight-box">
+                            <strong class="text-white">How it works:</strong>
+                            <p class="text-gray-300 mt-2">
+                                The token price remains constant throughout the campaign: P(t) = P₀ (initial price). 
+                                Effort is also held constant at a predetermined level (typically 5 on a 0-10 scale).
+                            </p>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <h4 class="font-semibold text-purple-400 mb-2">Advantages</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>✓ Predictable for backers</li>
+                                    <li>✓ Simple to implement</li>
+                                    <li>✓ Low information requirements</li>
+                                    <li>✓ Reduces price speculation</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-purple-400 mb-2">Disadvantages</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>✗ Cannot adapt to market conditions</li>
+                                    <li>✗ May leave money on the table</li>
+                                    <li>✗ Risk of underselling if demand is high</li>
+                                    <li>✗ No mechanism to incentivize early backers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dynamic Pricing -->
+                    <div class="concept-card glass rounded-xl p-6">
+                        <div class="flex items-start mb-4">
+                            <div class="step-number">2</div>
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-semibold mb-2">Dynamic Pricing Strategy</h3>
+                                <p class="text-gray-400 text-sm mb-4">Adaptive, responsive, and market-driven</p>
+                            </div>
+                        </div>
+                        
+                        <div class="highlight-box">
+                            <strong class="text-white">How it works:</strong>
+                            <p class="text-gray-300 mt-2">
+                                Price adjusts based on campaign progress relative to time: 
+                                P(t) = P₀ × (1 + adjustment), where adjustment = (progress_ratio - time_ratio) × rate.
+                                If the campaign is ahead of schedule, prices increase. If behind, prices decrease to stimulate demand.
+                                Effort is dynamically allocated, front-loading when behind target and conserving when ahead.
+                            </p>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <h4 class="font-semibold text-purple-400 mb-2">Advantages</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>✓ Maximizes revenue potential</li>
+                                    <li>✓ Self-correcting mechanism</li>
+                                    <li>✓ Adapts to real-time market feedback</li>
+                                    <li>✓ Optimizes effort allocation</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-purple-400 mb-2">Disadvantages</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>✗ Complex to communicate</li>
+                                    <li>✗ May create price speculation</li>
+                                    <li>✗ Requires real-time monitoring</li>
+                                    <li>✗ Risk of price manipulation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bonding Curve -->
+                    <div class="concept-card glass rounded-xl p-6">
+                        <div class="flex items-start mb-4">
+                            <div class="step-number">3</div>
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-semibold mb-2">Bonding Curve Strategy</h3>
+                                <p class="text-gray-400 text-sm mb-4">Automated market maker (AMM) based pricing</p>
+                            </div>
+                        </div>
+                        
+                        <div class="highlight-box">
+                            <strong class="text-white">How it works:</strong>
+                            <p class="text-gray-300 mt-2">
+                                Price increases automatically as more tokens are sold: 
+                                P(t) = P₀ × (1 + curve_param × tokens_sold / target_tokens).
+                                This creates an automated market where early buyers get better prices, incentivizing early participation.
+                                Effort scales with price to maintain demand as prices rise.
+                            </p>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <h4 class="font-semibold text-purple-400 mb-2">Advantages</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>✓ Rewards early backers</li>
+                                    <li>✓ Automated price discovery</li>
+                                    <li>✓ Creates liquidity mechanism</li>
+                                    <li>✓ Aligns with Web3 principles</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-purple-400 mb-2">Disadvantages</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>✗ Price volatility risk</li>
+                                    <li>✗ Complex for non-crypto users</li>
+                                    <li>✗ May discourage late participants</li>
+                                    <li>✗ Requires careful parameter tuning</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Simulation Process -->
+        <section class="mb-20">
+            <div class="glass rounded-2xl p-8 md:p-12">
+                <h2 class="text-4xl font-bold mb-8 gradient-text">The Simulation Process</h2>
+                
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="step-number flex-shrink-0">1</div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Initialization</h3>
+                            <p class="text-gray-300">
+                                Set campaign parameters: target amount, duration (days), initial price, and model parameters (α, β, γ). 
+                                Choose a pricing strategy and initialize the simulation state.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="step-number flex-shrink-0">2</div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Daily Iteration</h3>
+                            <p class="text-gray-300">
+                                For each day t in the campaign:
+                                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-400">
+                                    <li>Calculate current price P(t) using selected strategy</li>
+                                    <li>Determine effort level E(t) based on strategy and campaign progress</li>
+                                    <li>Generate random market noise ε(t) from log-normal distribution</li>
+                                    <li>Compute demand D(t) using the core equation</li>
+                                    <li>Calculate daily revenue: revenue(t) = D(t) × P(t)</li>
+                                    <li>Update cumulative raised amount</li>
+                                    <li>Store all metrics in history</li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="step-number flex-shrink-0">3</div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Cost Calculation</h3>
+                            <p class="text-gray-300">
+                                Calculate total campaign costs using the effort cost function: 
+                                Cost(E) = c₁ × E + c₂ × E². This quadratic function captures increasing marginal costs 
+                                of effort (diminishing returns). Total costs = Σ Cost(E(t)) over all days.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="step-number flex-shrink-0">4</div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Results Analysis</h3>
+                            <p class="text-gray-300">
+                                Evaluate campaign success: compare total raised against target. Calculate key metrics:
+                                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-400">
+                                    <li><strong>Success Status:</strong> total_raised ≥ target</li>
+                                    <li><strong>Net Profit:</strong> total_raised - total_costs</li>
+                                    <li><strong>ROI:</strong> (net_profit / total_costs) × 100%</li>
+                                    <li><strong>Total Tokens Sold:</strong> Σ D(t) over all days</li>
+                                    <li><strong>Average Token Price:</strong> total_raised / total_tokens</li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Principal-Agent Framework -->
+        <section class="mb-20">
+            <div class="glass rounded-2xl p-8 md:p-12">
+                <h2 class="text-4xl font-bold mb-6 gradient-text">Principal-Agent Framework</h2>
+                
+                <p class="text-lg text-gray-300 mb-6">
+                    EquiCurve models the economic relationship between the platform (principal) and the entrepreneur (agent), 
+                    addressing information asymmetry and incentive alignment challenges common in crowdfunding.
+                </p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="concept-card glass rounded-xl p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">The Problem</h3>
+                        <ul class="space-y-2 text-gray-300">
+                            <li><strong class="text-white">Information Asymmetry:</strong> Entrepreneurs have private information about project quality that platforms cannot directly observe.</li>
+                            <li><strong class="text-white">Moral Hazard:</strong> Entrepreneurs may shirk effort after receiving funding, knowing their effort is not perfectly observable.</li>
+                            <li><strong class="text-white">Adverse Selection:</strong> Low-quality projects may mimic high-quality ones, making it hard for platforms to screen effectively.</li>
+                            <li><strong class="text-white">Incentive Misalignment:</strong> Platform and entrepreneur objectives may diverge (e.g., platform wants volume, entrepreneur wants success).</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="concept-card glass rounded-xl p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">The Solution</h3>
+                        <ul class="space-y-2 text-gray-300">
+                            <li><strong class="text-white">Performance-Based Fees:</strong> Platform fees tied to campaign success align incentives and reduce moral hazard.</li>
+                            <li><strong class="text-white">Effort Signaling:</strong> Observable effort (marketing, updates) serves as a signal of project quality, helping platforms screen projects.</li>
+                            <li><strong class="text-white">Dynamic Contracts:</strong> Adjustable pricing and effort requirements create flexible mechanisms that adapt to revealed information.</li>
+                            <li><strong class="text-white">Threshold Mechanisms:</strong> All-or-nothing funding models create commitment devices, ensuring serious entrepreneurs participate.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Parameter Calibration -->
+        <section class="mb-20">
+            <div class="glass rounded-2xl p-8 md:p-12">
+                <h2 class="text-4xl font-bold mb-6 gradient-text">Parameter Calibration & Estimation</h2>
+                
+                <p class="text-lg text-gray-300 mb-6">
+                    EquiCurve uses log-linear transformation to estimate parameters from historical data, enabling data-driven calibration.
+                </p>
+                
+                <div class="equation-box mb-6">
+                    <div class="text-lg mb-2">Taking the natural logarithm of both sides:</div>
+                    <div class="text-xl font-bold">ln(D(t)) = ln(α) + β × ln(E(t)) - γ × ln(P(t)) + ln(ε(t))</div>
+                    <div class="text-sm text-gray-400 mt-2">This linear form enables ordinary least squares (OLS) regression</div>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="concept-card glass rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-3 text-purple-400">Typical Ranges</h3>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li><strong>α:</strong> 100 - 5,000 (market size)</li>
+                            <li><strong>β:</strong> 0.3 - 0.7 (effort elasticity)</li>
+                            <li><strong>γ:</strong> 0.8 - 1.5 (price elasticity)</li>
+                            <li><strong>σ:</strong> 0.1 - 0.3 (noise std dev)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="concept-card glass rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-3 text-purple-400">Calibration Sources</h3>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li>Historical campaign data</li>
+                            <li>Industry benchmarks</li>
+                            <li>A/B testing results</li>
+                            <li>Academic research</li>
+                            <li>Platform analytics</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="concept-card glass rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-3 text-purple-400">Validation</h3>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li>R² goodness of fit</li>
+                            <li>Out-of-sample testing</li>
+                            <li>Benchmark comparison</li>
+                            <li>Expert review</li>
+                            <li>Sensitivity analysis</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advanced Features -->
+        <section class="mb-20">
+            <div class="glass rounded-2xl p-8 md:p-12">
+                <h2 class="text-4xl font-bold mb-8 gradient-text">Advanced Features & Experiments</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="concept-card glass rounded-xl p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">Elasticity Analysis</h3>
+                        <p class="text-gray-300 mb-3">
+                            Systematic variation of price elasticity (γ) and effort elasticity (β) to understand 
+                            how demand sensitivity affects campaign outcomes. Helps identify optimal parameter ranges 
+                            for different market segments.
+                        </p>
+                    </div>
+                    
+                    <div class="concept-card glass rounded-xl p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">Fee Structure Optimization</h3>
+                        <p class="text-gray-300 mb-3">
+                            Comparison of fixed, dynamic, and hybrid fee models. Analyzes how platform fee structures 
+                            impact entrepreneur incentives and overall campaign success rates.
+                        </p>
+                    </div>
+                    
+                    <div class="concept-card glass rounded-xl p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">Duration Optimization</h3>
+                        <p class="text-gray-300 mb-3">
+                            Multi-run simulations across different campaign durations to find the optimal length that 
+                            maximizes success probability while balancing urgency and awareness-building time.
+                        </p>
+                    </div>
+                    
+                    <div class="concept-card glass rounded-xl p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">Market Condition Scenarios</h3>
+                        <p class="text-gray-300 mb-3">
+                            Simulation of bull vs. bear markets, competition effects, and external shocks. 
+                            Helps entrepreneurs and platforms prepare for various market conditions and adjust strategies accordingly.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Insights -->
+        <section class="mb-20">
+            <div class="glass rounded-2xl p-8 md:p-12 bg-gradient-to-r from-purple-900/20 to-indigo-900/20">
+                <h2 class="text-4xl font-bold mb-8 gradient-text">Key Insights & Best Practices</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">For Entrepreneurs</h3>
+                        <ul class="space-y-2 text-gray-300">
+                            <li>• Higher effort (E) consistently increases demand, but with diminishing returns</li>
+                            <li>• Dynamic pricing can increase revenue by 15-30% compared to fixed pricing</li>
+                            <li>• Front-loading effort is crucial when campaigns are behind schedule</li>
+                            <li>• Price elasticity (γ) > 1 means small price changes have large demand effects</li>
+                            <li>• Bonding curves work best for projects with strong early adopter communities</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-purple-400">For Platforms</h3>
+                        <ul class="space-y-2 text-gray-300">
+                            <li>• Performance-based fees align incentives better than fixed fees</li>
+                            <li>• Providing effort visibility helps reduce information asymmetry</li>
+                            <li>• Optimal campaign duration varies by project type (typically 14-30 days)</li>
+                            <li>• Price elasticity data helps set platform guidelines and recommendations</li>
+                            <li>• Multi-round strategies can improve overall success rates</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="text-center">
+            <div class="glass rounded-2xl p-12">
+                <h2 class="text-3xl font-bold mb-4 gradient-text">Ready to Experiment?</h2>
+                <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                    Now that you understand the mechanics, dive into the simulator and explore how different parameters 
+                    and strategies affect campaign outcomes in real-time.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="simulatorv2.html" class="gradient-bg px-8 py-4 rounded-full font-semibold text-lg hover:opacity-90 transition-opacity glow">
+                        Launch Simulator
+                    </a>
+                    <a href="index.html" class="glass px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/10 transition-colors">
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 border-t border-gray-800 mt-20">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-2xl font-bold gradient-text mb-4">EquiCurve</h1>
+            <p class="text-gray-400 mb-4">
+                A simulation project developed for the MSc Digital FinTech Capstone (FT5007)<br/>
+                at the National University of Singapore
+            </p>
+            <p class="text-sm text-gray-500">
+                © 2025 Rajkumar Muthachari. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    
+    <!-- Smooth scrolling -->
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+
